@@ -1,0 +1,21 @@
+{
+  "name": "houzes-api-project",
+  "version": "1.0.0",
+  "description": "Working oauth2 server with minimal configuration",
+  "scripts": {
+    "start": "nodemon node app.js"
+  },
+  "author": "Dipanjal Maitra",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "oauth2-server": "^3.0.1",
+    "pg": "^7.10.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
