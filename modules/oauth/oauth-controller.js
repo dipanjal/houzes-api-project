@@ -15,6 +15,7 @@ let Response = app.response;
 router.all('/token', obtainToken);
 
 function obtainToken(req, res) {
+	req.body.username = req.body.email;
 	let request = new Request(req);
 	let response = new Response(res);
 	console.log('obtainToken()');

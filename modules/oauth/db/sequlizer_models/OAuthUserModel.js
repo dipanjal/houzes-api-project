@@ -10,7 +10,9 @@ User.init({
         allowNull: false,
         unique: true,
       },
-    username: Sequelize.TEXT,
+    first_name: Sequelize.TEXT,
+    last_name: Sequelize.TEXT,
+    email: Sequelize.TEXT,
     password: Sequelize.TEXT,
     scope: Sequelize.STRING
 },

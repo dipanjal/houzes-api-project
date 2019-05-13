@@ -22,29 +22,29 @@ let oAuthDao = function(){};
 /**
  * USER START
  */
-oAuthDao.findByUserName = (userName,callback) => {
-    console.log('findByUserName()');
+oAuthDao.findByEmail = (email, callback) => {
+    console.log('findByEmail()');
     User.findOne({
-        where:{username:userName},
-        attributes: ['id', 'username', 'password', 'scope']
+        where:{email:email},
+        // attributes: ['id', 'username', 'password', 'scope']
     }).then(user => {
         callback(null, user);
     }).catch( err => {
-        console.log("findByUserName - Err: ", err);
+        console.log("findByEmail - Err: ", err);
         callback(err,null);
     });
 };
 
-oAuthDao.findUserByUserNameAndPassword = (userName, password, callback) => {
-    console.log('findByUserName()');
+oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
+    console.log('findByEmail()');
     User.findOne({
-        where:{username:userName},
-        attributes: ['id', 'username', 'password', 'scope']
+        where:{email:email},
+        attributes: ['id', 'email', 'password', 'scope']
     }).then(user => {
         user.password === password ? callback(null, user) : callback(null,null);
         // return user.password === password ? user : null;
     }).catch( err => {
-        console.log("findUserByUserNameAndPassword - Err: ", err);
+        console.log("findUserByEmailAndPassword - Err: ", err);
         callback(err,null);
         // return null;
     });
@@ -56,8 +56,10 @@ oAuthDao.findUserByUserNameAndPassword = (userName, password, callback) => {
 
 oAuthDao.saveOAuthUser = (UserData, callback) => {
     User.create({
-        username: UserData.username,
+        email: UserData.email,
         password: UserData.password,
+        first_name: UserData.first_name,
+        last_name: UserData.last_name,
         scope: UserData.scope
     }).then(user => {
         callback(null,user);
@@ -97,22 +99,27 @@ oAuthDao.findAccessTokenByBearerToken = (bearerToken,callback) => {
 
 oAuthDao.saveOAuthClient = (UserData, OAuthClientData, callback) => {
 
-    oAuthDao.findUserByUserNameAndPassword(UserData.username,UserData.password,(err,user) => {
+    oAuthDao.findUserByEmailAndPassword(UserData.email,UserData.password,(err, user) => {
         user = user.toJSON();
         if (err){
             callback(err,null);
         }
-        OAuthClient.create({
-            name:OAuthClientData.client_name,
-            client_id:OAuthClientData.client_id,
-            client_secret:OAuthClientData.client_secret,
-            scope: user.scope,
-            user_id: user.id
-        }).then(oauthClient =>{
-            callback(null,oauthClient);
-        }).catch(err => {
-            callback(err,null);
-        });
+        else if (user) {
+            OAuthClient.create({
+                name:OAuthClientData.client_name,
+                client_id:OAuthClientData.client_id,
+                client_secret:OAuthClientData.client_secret,
+                scope: user.scope,
+                user_id: user.id
+            }).then(oauthClient =>{
+                callback(null,oauthClient);
+            }).catch(err => {
+                callback(err,null);
+            });
+        }else{
+            callback("no user found",null);
+        }
+
     });
 };
 

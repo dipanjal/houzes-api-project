@@ -39,8 +39,6 @@ function getAccessToken(bearerToken) {
     .catch(function (err) {
       console.log("getAccessToken - Err: ",err);
     });
-
-  // return accessTokenObj;
 }
 
 
@@ -52,15 +50,14 @@ function getClient(clientId, clientSecret) {
     };
     if (clientSecret) options.where.client_secret = clientSecret;
 
-    // return sqldb.OAuthClient
     return OAuthClient.findOne(options)
         .then(function (client) {
             if (!client) return new Error("client not found");
-            var clientWithGrants = client.toJSON()
+            let clientWithGrants = client.toJSON();
             clientWithGrants.grants = ['authorization_code', 'password', 'refresh_token', 'client_credentials']
             // Todo: need to create another table for redirect URIs
-            clientWithGrants.redirectUris = [clientWithGrants.redirect_uri]
-            delete clientWithGrants.redirect_uri
+            clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
+            delete clientWithGrants.redirect_uri;
             //clientWithGrants.refreshTokenLifetime = integer optional
             //clientWithGrants.accessTokenLifetime  = integer optional
             return clientWithGrants
@@ -74,8 +71,8 @@ function getUser(username, password) {
     console.log('getUser()');
     return User
         .findOne({
-            where: {username: username},
-            attributes: ['id', 'username', 'password', 'scope'],
+            where: {email: username},
+            attributes: ['id', 'email', 'password', 'scope'],
         })
         .then(function (user) {
             return user.password == password ? user.toJSON() : false;
