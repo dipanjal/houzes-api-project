@@ -26,7 +26,7 @@ function getAccessToken(bearerToken) {
       ]
     })
     .then(function (accessToken) {
-      console.log(accessToken);
+      // console.log(accessToken);
       if (!accessToken) {
         return false;
       }

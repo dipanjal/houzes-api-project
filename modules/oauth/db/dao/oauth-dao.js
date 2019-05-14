@@ -22,21 +22,21 @@ let oAuthDao = function(){};
 /**
  * USER START
  */
-oAuthDao.findByEmail = (email, callback) => {
-    console.log('findByEmail()');
+oAuthDao.findUserByEmail = (email, callback) => {
+    console.log('findUserByEmail()');
     User.findOne({
         where:{email:email},
         // attributes: ['id', 'username', 'password', 'scope']
     }).then(user => {
         callback(null, user);
     }).catch( err => {
-        console.log("findByEmail - Err: ", err);
+        console.log("findUserByEmail - Err: ", err);
         callback(err,null);
     });
 };
 
 oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
-    console.log('findByEmail()');
+    console.log('findUserByEmail()');
     User.findOne({
         where:{email:email},
         attributes: ['id', 'email', 'password', 'scope']
