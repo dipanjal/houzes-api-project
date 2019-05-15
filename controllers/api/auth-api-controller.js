@@ -37,7 +37,7 @@ router.get("/", (req,res) => {
  * api endpoint: http://localhost:3000/api/auth/register/user
  * register oAuth user
  */
-router.post('/register/user', validationMiddleware.isUserExist,(req,res) => {
+router.post('/register/user', validationMiddleware.isUserExist, (req,res) => {
     let responseBody = req.body;
     let UserData = {
         email: responseBody.email,
