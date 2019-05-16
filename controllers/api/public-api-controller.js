@@ -8,8 +8,8 @@ const router = require('express').Router();
 let models = require('../../models');
 let ApiResponse = models.ViewModels.ApiResponse;
 
-const validationMiddleware = require('../../middlewares/validator');
 const oAuthDao = require('../../modules/oauth/db/dao/oauth-dao');
+const validationMiddleware = require('../../middlewares/validator');
 
 
 /**
@@ -85,25 +85,40 @@ router.post('/register/client', (req,res) => {
     });
 });
 
-router.post('/reset-password/', (req, res) => {
+router.post('/reset-password', (req, res) => {
     oAuthDao.findUserByEmail(req.body.email, (err,user)=>{
         if(err){res.send(err)}
         else{
             user = user.toJSON();
             delete user.password;
-            res.json(user);
+
+            let uuid = getUUID();
+
+            let data = {
+                subject: 'Hello Testing!!',
+                token: uuid,
+                url: `http://localhost:3000/api/public/reset-password/${uuid}`
+            };
+
+            let mailer = require('../../modules/mailer');
+            mailer.sendEmail(user, data,(err, mailResp) => {
+                if(err){res.send(err)}
+                else{res.json(mailResp)}
+            });
         }
     });
 });
 
 router.get('/reset-password/:token', (req, res) => {
-    res.json({ uuid:req.params.token});
+    res.json({ uuid:req.params.token,
+            message: 'password reset successfully!!',
+            code:200});
 });
 
-router.get('/send-email',(req,res)=>{
-    let mailer = require('../../modules/mailer/mailer');
-    mailer.sendEmail();
-    res.send('djlajsdld')
-});
+function getUUID(){
+    let uuid = require('uuid4');
+    return  uuid();
+}
+
 
 module.exports = router;

@@ -3,6 +3,7 @@ let _ = require('lodash');
 /** @todo load from factory */
 
 let sequelizeModels = require('./db/sequlizer_models');
+let hashUtlis = require('../../components/hash-utils');
 
 
 let User = sequelizeModels.User,
@@ -75,7 +76,8 @@ function getUser(username, password) {
             attributes: ['id', 'email', 'password', 'scope'],
         })
         .then(function (user) {
-            return user.password == password ? user.toJSON() : false;
+            // return user.password == password ? user.toJSON() : false;
+            return hashUtlis.isEqualMD5Hash(password,user.password) ? user.toJSON() : false;
         })
         .catch(function (err) {
             console.log("getUser - Err: ", err)

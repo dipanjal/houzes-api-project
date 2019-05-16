@@ -16,6 +16,8 @@ app.get('/',function(req, res){
 app.use('/oauth',require('./modules/oauth/oauth-controller'));
 app.use('/api',require('./routers/api-router'));
 
+// app.use(require('./modules/mailer'));
+
 
 server.listen(port, () => {
 	console.log(`listening: ${port}`);

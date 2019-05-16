@@ -8,6 +8,7 @@
   "author": "Dipanjal Maitra",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
@@ -18,7 +19,8 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "latest",
     "socket.io": "^2.2.0",
-    "socketio-auth": "^0.1.1"
+    "socketio-auth": "^0.1.1",
+    "uuid4": "^1.1.4"
   },
   "devDependencies": {
     "nodemon": "^1.19.0"

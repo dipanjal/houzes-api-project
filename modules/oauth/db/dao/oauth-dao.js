@@ -16,7 +16,7 @@ let User = sequelizeModels.User,
 // const cls = require('continuation-local-storage'),
 //     namespace = cls.createNamespace('my-very-own-namespace');
 
-let context = this;
+let hashUtlis = require('../../../../components/hash-utils');
 let oAuthDao = function(){};
 
 /**
@@ -41,7 +41,11 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
         where:{email:email},
         attributes: ['id', 'email', 'password', 'scope']
     }).then(user => {
-        user.password === password ? callback(null, user) : callback(null,null);
+        if (hashUtlis.isEqualMD5Hash(password,user.password)){
+            callback(null, user)
+        }
+        callback('wrong password',null);
+        // user.password === password ? callback(null, user) : callback(null,null);
         // return user.password === password ? user : null;
     }).catch( err => {
         console.log("findUserByEmailAndPassword - Err: ", err);
@@ -57,7 +61,7 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
 oAuthDao.saveOAuthUser = (UserData, callback) => {
     User.create({
         email: UserData.email,
-        password: UserData.password,
+        password: hashUtlis.generateMD5Hash(UserData.password),
         first_name: UserData.first_name,
         last_name: UserData.last_name,
         scope: UserData.scope
