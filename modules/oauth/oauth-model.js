@@ -118,7 +118,7 @@ function revokeToken(token) {
          * https://github.com/oauthjs/node-oauth2-server/pull/274
          * https://github.com/oauthjs/node-oauth2-server/issues/290
          */
-        var expiredToken = token
+        var expiredToken = token;
         expiredToken.refreshTokenExpiresAt = new Date('2015-05-28T06:59:53.000Z')
         return expiredToken
     }).catch(function (err) {
@@ -227,7 +227,7 @@ function getUserFromClient(client) {
 
 function getRefreshToken(refreshToken) {
     console.log('getRefreshToken()');
-    if (!refreshToken || refreshToken === 'undefined') return false
+    if (!refreshToken || refreshToken === 'undefined') return false;
 
     return OAuthRefreshToken
         .findOne({
@@ -237,9 +237,10 @@ function getRefreshToken(refreshToken) {
 
         })
         .then(function (savedRT) {
+            // console.log(savedRT);
             var tokenTemp = {
-                user: savedRT ? savedRT.User.toJSON() : {},
-                client: savedRT ? savedRT.OAuthClient.toJSON() : {},
+                user: savedRT ? savedRT.user.toJSON() : {},
+                client: savedRT ? savedRT.oauth_client.toJSON() : {},
                 refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
                 refreshToken: refreshToken,
                 refresh_token: refreshToken,

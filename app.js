@@ -9,14 +9,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 
-
-
-
 app.get('/',function(req, res){
 	res.sendFile(__dirname+'/modules/live_tracking/client.html');
 });
-
-
 
 app.use('/oauth',require('./modules/oauth/oauth-controller'));
 app.use('/api',require('./routers/api-router'));

@@ -13,9 +13,12 @@ let Response = app.response;
 
 /** GET AUTH TOKEN /oauth/token */
 router.all('/token', obtainToken);
+router.all('/revoke', obtainToken);
 
 function obtainToken(req, res) {
-	req.body.username = req.body.email;
+
+	if(req.body.email){req.body.username = req.body.email;}
+
 	let request = new Request(req);
 	let response = new Response(res);
 	console.log('obtainToken()');
@@ -29,5 +32,7 @@ function obtainToken(req, res) {
 			res.status(err.code || 500).json(err);
 		});
 }
+
+
 
 module.exports = router;

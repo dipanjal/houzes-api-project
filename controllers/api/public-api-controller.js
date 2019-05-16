@@ -1,5 +1,5 @@
 /**
- * base url: /api/auth
+ * base url: /api/public
  * @type {Router}
  */
 
@@ -13,29 +13,30 @@ const oAuthDao = require('../../modules/oauth/db/dao/oauth-dao');
 
 
 /**
- * api endpoint: http://localhost:3000/api/auth/register/user
+ * api endpoint: http://localhost:3000/api/public/register/user
  */
 router.get("/", (req,res) => {
     let data = [
         {
             "message": 'register oauth user',
             "method type": 'POST',
-            "endpoint": 'http://localhost:3000/api/auth/register/user',
-            "params": 'username, password'
+            "endpoint": 'http://localhost:3000/api/public/register/user',
+            "params": 'email, password, first_name, last_name'
         },
         {
             "message": 'register oauth client',
             "method type": 'POST',
-            "endpoint": 'http://localhost:3000/api/auth/register/client',
-            "params": 'username, password, client_name, client_id, client_secret'
+            "endpoint": 'http://localhost:3000/api/public/register/client',
+            "params": 'email, password, client_name, client_id, client_secret'
         }
     ];
     res.json(new ApiResponse(200,'ok',data));
 });
 
 /**
- * api endpoint: http://localhost:3000/api/auth/register/user
- * register oAuth user
+ * REGISTER oAUTH USER
+ * api endpoint: http://localhost:3000/api/public/register/user
+ * params: email, password, first_name, last_name
  */
 router.post('/register/user', validationMiddleware.isUserExist, (req,res) => {
     let responseBody = req.body;
@@ -49,7 +50,6 @@ router.post('/register/user', validationMiddleware.isUserExist, (req,res) => {
 
     oAuthDao.saveOAuthUser(UserData, (err, oAuthUser) => {
         if (err){
-            // let errorMessage = err.errors[0].message
             res.send(err)
         }
         else{
@@ -59,6 +59,11 @@ router.post('/register/user', validationMiddleware.isUserExist, (req,res) => {
     });
 });
 
+/**
+ * REGISTER OAUTH CLIENT
+ * api endpoint: http://localhost:3000/api/public/register/client
+ * params: email, password, client_name, client_id, client_secret
+ */
 router.post('/register/client', (req,res) => {
     let responseBody = req.body;
     let UserData = {
@@ -78,7 +83,27 @@ router.post('/register/client', (req,res) => {
             res.json(oAuthClient);
         }
     });
+});
 
+router.post('/reset-password/', (req, res) => {
+    oAuthDao.findUserByEmail(req.body.email, (err,user)=>{
+        if(err){res.send(err)}
+        else{
+            user = user.toJSON();
+            delete user.password;
+            res.json(user);
+        }
+    });
+});
+
+router.get('/reset-password/:token', (req, res) => {
+    res.json({ uuid:req.params.token});
+});
+
+router.get('/send-email',(req,res)=>{
+    let mailer = require('../../modules/mailer/mailer');
+    mailer.sendEmail();
+    res.send('djlajsdld')
 });
 
 module.exports = router;

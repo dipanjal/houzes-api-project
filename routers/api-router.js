@@ -1,9 +1,9 @@
 const router = require('express').Router();
 
-let testApiController = require('../controllers/api/test-api-controller');
-let authApiController = require('../controllers/api/auth-api-controller');
+let testApis = require('../controllers/api/test-api-controller');
+let publicApis = require('../controllers/api/public-api-controller');
 
-router.use('/test',testApiController);
-router.use('/auth',authApiController);
+router.use('/test',testApis);
+router.use('/public',publicApis);
 
 module.exports = router;
