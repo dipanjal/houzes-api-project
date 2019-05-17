@@ -9,7 +9,7 @@ router.get('/',authenticator,(req,res)=>{
 });
 
 router.get('/all_tokens',authenticator,(req,res)=>{
-    let oAuthDao = require('../../modules/oauth/db/dao/oauth-dao');
+    let oAuthDao = require('../../commons/dao/oauth-dao');
     oAuthDao.findAllAccessTokens((err,oAuthAccessTokens) => {
         if(err) res.send(err);
         res.json(oAuthAccessTokens);

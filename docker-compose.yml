@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  houzes-postgres-env:
+    restart: always
+    image: postgres:9.6.10-alpine
+    container_name: houzesDbContainer
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: wsit97480
+      POSTGRES_DB: ra_houzes
+    ports:
+      - "5454:5432"
+    volumes:
+      - houzesDatabase:/var/lib/postgresql
+
+  houzes-api-project:
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: houzesApiContainer
+    command: bash -c "npm i && npm start"
+    volumes:
+      - .:/home/app
+    depends_on:
+      - houzes-postgres-env
+    ports:
+      - "0.0.0.0:3001:3000"
+
+
+
+volumes:
+  houzesDatabase:
+
+

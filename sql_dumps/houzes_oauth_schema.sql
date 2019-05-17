@@ -1,8 +1,9 @@
--- Adminer 4.7.1 PostgreSQL dump
+-- Adminer 4.3.1 PostgreSQL dump
+
+\connect "ra_houzes";
 
 DROP TABLE IF EXISTS "oauth_access_tokens";
-DROP SEQUENCE IF EXISTS oauth_access_tokens_id_seq;
-CREATE SEQUENCE oauth_access_tokens_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE oauth_access_tokens_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_access_tokens" (
     "id" integer DEFAULT nextval('oauth_access_tokens_id_seq') NOT NULL,
@@ -18,8 +19,7 @@ CREATE TABLE "public"."oauth_access_tokens" (
 
 
 DROP TABLE IF EXISTS "oauth_authorization_codes";
-DROP SEQUENCE IF EXISTS oauth_authorization_codes_id_seq;
-CREATE SEQUENCE oauth_authorization_codes_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE oauth_authorization_codes_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_authorization_codes" (
     "id" integer DEFAULT nextval('oauth_authorization_codes_id_seq') NOT NULL,
@@ -36,8 +36,7 @@ CREATE TABLE "public"."oauth_authorization_codes" (
 
 
 DROP TABLE IF EXISTS "oauth_clients";
-DROP SEQUENCE IF EXISTS oauth_clients_id_seq;
-CREATE SEQUENCE oauth_clients_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE oauth_clients_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_clients" (
     "id" integer DEFAULT nextval('oauth_clients_id_seq') NOT NULL,
@@ -56,8 +55,7 @@ CREATE TABLE "public"."oauth_clients" (
 
 
 DROP TABLE IF EXISTS "oauth_refresh_tokens";
-DROP SEQUENCE IF EXISTS oauth_refresh_tokens_id_seq;
-CREATE SEQUENCE oauth_refresh_tokens_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE oauth_refresh_tokens_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_refresh_tokens" (
     "id" integer DEFAULT nextval('oauth_refresh_tokens_id_seq') NOT NULL,
@@ -73,8 +71,7 @@ CREATE TABLE "public"."oauth_refresh_tokens" (
 
 
 DROP TABLE IF EXISTS "oauth_scopes";
-DROP SEQUENCE IF EXISTS oauth_scopes_id_seq;
-CREATE SEQUENCE oauth_scopes_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE oauth_scopes_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_scopes" (
     "id" integer DEFAULT nextval('oauth_scopes_id_seq') NOT NULL,
@@ -87,19 +84,20 @@ CREATE TABLE "public"."oauth_scopes" (
 
 
 DROP TABLE IF EXISTS "oauth_users";
-DROP SEQUENCE IF EXISTS users_id_seq;
-CREATE SEQUENCE users_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+CREATE SEQUENCE users_id_seq INCREMENT  MINVALUE  MAXVALUE  START 1 CACHE ;
 
 CREATE TABLE "public"."oauth_users" (
     "id" integer DEFAULT nextval('users_id_seq') NOT NULL,
-    "username" text,
+    "email" text,
     "password" text,
     "scope" text,
     "createdAt" timestamp DEFAULT now(),
     "updatedAt" timestamp,
-    CONSTRAINT "oauth_users_username_uindex" UNIQUE ("username"),
+    "first_name" text,
+    "last_name" text,
+    CONSTRAINT "oauth_users_username_uindex" UNIQUE ("email"),
     CONSTRAINT "users_pk" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 
--- 2019-05-13 11:20:40.440049+06
+-- 2019-05-17 12:14:40.056065+06

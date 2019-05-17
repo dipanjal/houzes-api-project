@@ -1,6 +1,6 @@
 
-let oAuthDao = require('../modules/oauth/db/dao/oauth-dao');
-let ApiStatus = require('../models').ViewModels.ApiResponse;
+let oAuthDao = require('../db/dao/oauth-dao');
+let ApiResponse = require('../components/view-models').ApiResponse;
 
 let validator = function(){};
 
@@ -11,7 +11,21 @@ let validator = function(){};
 validator.isUserExist = (req,res, next) => {
 	oAuthDao.findUserByEmail( req.body.email,(err, user) => {
 		if (user){
-			res.json(new ApiStatus(403,'email already existed, select an unique email'))
+			res.json(new ApiResponse(403,'email already existed, select an unique email'))
+		}else{
+			next();
+		}
+	});
+};
+
+validator.isOAUthClientExist = (req,res, next) => {
+	oAuthDao.findClientByClientId( req.body.client_id,(err, oAuthClient) => {
+		if (err) {res.send(err);}
+		else if (oAuthClient){
+			let uuidUtils = require('../components').utils.uuidUtils;
+			let uuid = uuidUtils.generateUUIDWithoutDash();
+			let shortId = uuidUtils.generateShortUUID();
+			res.json(new ApiResponse(403,'client id already in use',{suggested_client_id: shortId }));
 		}else{
 			next();
 		}

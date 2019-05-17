@@ -2,8 +2,8 @@ let _ = require('lodash');
 
 /** @todo load from factory */
 
-let sequelizeModels = require('./db/sequlizer_models');
-let hashUtlis = require('../../components/hash-utils');
+let sequelizeModels = require('./sequlizer_models');
+let hashUtlis = require('../../components/utils/hash-utils');
 
 
 let User = sequelizeModels.User,

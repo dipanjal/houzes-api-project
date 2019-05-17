@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../connectors/seq-pg-connector');
+const sequelize = require('../../../db/connectors/seq-pg-connector');
 
 class OAuthAuthorizationCode extends Sequelize.Model{}
 OAuthAuthorizationCode.init({

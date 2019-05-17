@@ -5,10 +5,10 @@
 
 const router = require('express').Router();
 
-let models = require('../../models');
-let ApiResponse = models.ViewModels.ApiResponse;
+let viewModels = require('../../components/view-models');
+let ApiResponse = viewModels.ApiResponse;
 
-const oAuthDao = require('../../modules/oauth/db/dao/oauth-dao');
+const oAuthDao = require('../../db/dao/oauth-dao');
 const validationMiddleware = require('../../middlewares/validator');
 
 
@@ -59,12 +59,16 @@ router.post('/register/user', validationMiddleware.isUserExist, (req,res) => {
     });
 });
 
+router.get('/confirm/user/token/:token', (req,res) => {
+
+});
+
 /**
  * REGISTER OAUTH CLIENT
  * api endpoint: http://localhost:3000/api/public/register/client
  * params: email, password, client_name, client_id, client_secret
  */
-router.post('/register/client', (req,res) => {
+router.post('/register/client', validationMiddleware.isOAUthClientExist,  (req,res) => {
     let responseBody = req.body;
     let UserData = {
         email: responseBody.email,
@@ -77,13 +81,20 @@ router.post('/register/client', (req,res) => {
         client_id: responseBody.client_id,
         client_secret: responseBody.client_secret,
     };
-    oAuthDao.saveOAuthClient(UserData,OAuthClientData,(err,oAuthClient)=>{
-        if (err) {res.send(err)}
-        else{
-            res.json(oAuthClient);
-        }
-    });
+
+    /**
+     * Using Promise
+     */
+    oAuthDao.saveOAuthClient(UserData,OAuthClientData)
+        .then(response => res.json(response))
+        .catch(error => res.send(error))
+
+    // oAuthDao.saveOAuthClient(UserData,OAuthClientData,(err,oAuthClient)=>{
+    //     if (err) {res.send(err)}
+    //     else{res.json(oAuthClient)}
+    // });
 });
+
 
 router.post('/reset-password', (req, res) => {
     oAuthDao.findUserByEmail(req.body.email, (err,user)=>{
@@ -97,11 +108,11 @@ router.post('/reset-password', (req, res) => {
             let data = {
                 subject: 'Hello Testing!!',
                 token: uuid,
-                url: `http://localhost:3000/api/public/reset-password/${uuid}`
+                url: `http://localhost:3000/api/v1/public/reset-password/token/${uuid}`
             };
 
             let mailer = require('../../modules/mailer');
-            mailer.sendEmail(user, data,(err, mailResp) => {
+            mailer.sendPasswordResetEmail(user, data,(err, mailResp) => {
                 if(err){res.send(err)}
                 else{res.json(mailResp)}
             });
@@ -109,7 +120,7 @@ router.post('/reset-password', (req, res) => {
     });
 });
 
-router.get('/reset-password/:token', (req, res) => {
+router.get('/reset-password/token/:token', (req, res) => {
     res.json({ uuid:req.params.token,
             message: 'password reset successfully!!',
             code:200});

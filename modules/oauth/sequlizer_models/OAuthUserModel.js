@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../connectors/seq-pg-connector');
+let sequelize = require('../../../db/connectors/seq-pg-connector');
 
 class User extends Sequelize.Model {}
 User.init({
@@ -14,7 +14,8 @@ User.init({
     last_name: Sequelize.TEXT,
     email: Sequelize.TEXT,
     password: Sequelize.TEXT,
-    scope: Sequelize.STRING
+    scope: Sequelize.STRING,
+    status: Sequelize.TEXT
 },
 {
     sequelize,

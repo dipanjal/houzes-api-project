@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../connectors/seq-pg-connector');
+const Sequelize = require('sequelize/types');
+const sequelize = require('../../../db/connectors/seq-pg-connector');
 
 class OAuthScope extends Sequelize.Model{}
 OAuthScope.init({

@@ -26,7 +26,7 @@ var sequelizeModels = {
     OAuthClient: OAuthClient,
     OAuthAuthorizationCode: OAuthAuthorizationCode,
     OAuthRefreshToken: OAuthRefreshToken
-}
+};
 
 module.exports = sequelizeModels;
 
