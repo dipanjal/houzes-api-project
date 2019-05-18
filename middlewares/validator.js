@@ -66,7 +66,7 @@ validator.isOAUthClientExist = (req,res, next) => {
 
 validator.isTempTokenExpired = (req,res,next) => {
 	let config = require('../config');
-	let tempTokenTimeTime = config.tempTokenLifeTime;
+	let tempTokenTimeTime = config.otpLifeTime;
 	console.log(tempTokenTimeTime);
 };
 
