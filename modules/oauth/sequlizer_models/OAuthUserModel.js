@@ -12,7 +12,14 @@ User.init({
       },
     first_name: Sequelize.TEXT,
     last_name: Sequelize.TEXT,
-    email: Sequelize.TEXT,
+    email: {
+        type: Sequelize.TEXT,
+        validate: {
+            isEmail:{
+                msg: 'invalid email address'
+            }
+        }
+    },
     password: Sequelize.TEXT,
     scope: Sequelize.STRING,
     status: Sequelize.TEXT

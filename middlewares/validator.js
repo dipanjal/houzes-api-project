@@ -4,6 +4,21 @@ let ApiResponse = require('../components/view-models').ApiResponse;
 
 let validator = function(){};
 
+validator.isUserValid = (req,res, next) => {
+	let body = req.body;
+	if(!body.email){
+		res.json('email is required!');
+	}else if(!body.password){
+		res.json('password is required!');
+	}else if(!body.first_name){
+		res.json('first name is required!');
+	}else if(!body.last_name){
+		res.json('last name is required!');
+	}else{
+		next();
+	}
+};
+
 /**
  *	WHILE REGISTER USER
  *	CHECK IF USER ALREADY EXIST or NOT
@@ -16,6 +31,23 @@ validator.isUserExist = (req,res, next) => {
 			next();
 		}
 	});
+};
+
+validator.isOAuthClientValid = (req,res, next) => {
+	let body = req.body;
+	if(!body.email){
+		res.json('user email is required!');
+	}else if(!body.password){
+		res.json('user password is required!');
+	}else if(!body.client_name){
+		res.json('client name is required!');
+	}else if(!body.client_id){
+		res.json('client id is required!');
+	}else if(!body.client_secret){
+		res.json('client secret is required!');
+	}else{
+		next();
+	}
 };
 
 validator.isOAUthClientExist = (req,res, next) => {
