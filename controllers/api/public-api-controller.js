@@ -103,8 +103,8 @@ router.post('/reset-password', (req, res) => {
             user = user.toJSON();
             delete user.password;
 
-            let uuid = getUUID();
-
+            let uuidUtils = require('../../components').utils.uuidUtils;
+            let uuid = uuidUtils.generateUUIDWithoutDash();
             let data = {
                 subject: 'Hello Testing!!',
                 token: uuid,
