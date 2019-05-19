@@ -1,3 +1,5 @@
 module.exports = {
-  utils:require('./utils')
+  utils:require('./utils'),
+  enums:require('./enums'),
+  viewModels:require('./view-models')
 };

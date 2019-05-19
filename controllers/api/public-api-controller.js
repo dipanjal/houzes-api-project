@@ -1,5 +1,5 @@
 /**
- * base url: /api/public
+ * base url: /api/v1/public
  * @type {Router}
  */
 
@@ -9,6 +9,8 @@ let viewModels = require('../../components/view-models');
 let ApiResponse = viewModels.ApiResponse;
 
 const oAuthDao = require('../../db/dao/oauth-dao');
+
+
 const validator = require('../../middlewares/validator');
 
 
@@ -97,7 +99,7 @@ router.post('/register/client', validator.isOAUthClientExist,  (req,res) => {
 
 
 router.post('/reset-password', (req, res) => {
-    oAuthDao.findUserByEmail(req.body.email, (err,user)=>{
+    /*oAuthDao.findUserByEmail(req.body.email, (err,user)=>{
         if(err){res.send(err)}
         else{
             user = user.toJSON();
@@ -117,19 +119,86 @@ router.post('/reset-password', (req, res) => {
                 else{res.json(mailResp)}
             });
         }
-    });
+    });*/
+
+    oAuthDao.findUserByEmail(req.body.email)
+        .then(user => {
+        user = user.toJSON();
+        delete user.password;
+
+        // let uuidUtils = require('../../components').utils.uuidUtils;
+        // let uuid = uuidUtils.generateUUIDWithoutDash();
+
+        let components = require('../../components');
+        let OTPUtils = components.utils.otpUtils;
+        let VerificationTypesEnum = components.enums.VerificationTypesEnum;
+        let code = OTPUtils.generateOTP();
+        let otpLifeTime = OTPUtils.getOTPLifeTime();
+        let dataToSave = {
+            code:code,
+            expired_at:otpLifeTime,
+            user_email:req.body.email,
+            verification_type: VerificationTypesEnum.PASSWORD_RESET
+        };
+
+        let  VerificationCodeDao = require('../../db/dao/verification-code-dao');
+        VerificationCodeDao.saveOrUpdate(dataToSave)
+            .then(verificationCodeObj => {
+                let emailData = {
+                    subject: 'Hello Testing!!',
+                    token: code,
+                    url: `http://localhost:3000/api/v1/public/reset-password/token/${code}`
+                };
+
+                // let mailer = require('../../modules/mailer');
+                // mailer.sendPasswordResetEmail(user, emailData,(err, mailResp) => {
+                //     if(err){res.send(err)}
+                //     else{
+                //         res.json(dataToSave);
+                //     }
+                // });
+
+                res.json(dataToSave);
+            })
+            .catch(err => {
+                res.send(err)
+            });
+
+    }).catch(err => res.send(err));
 });
 
-router.get('/reset-password/token/:token', (req, res) => {
-    res.json({ uuid:req.params.token,
+router.post('/reset-password/verifyToken',validator.velidateTempToken, (req, res) => {
+    res.json({ otp:req.params.token,
             message: 'password reset successfully!!',
             code:200});
 });
 
-function getUUID(){
-    let uuid = require('uuid4');
-    return  uuid();
-}
+router.get('/reset-password/token/:token', (req, res) => {
+    res.json({ otp:req.params.token,
+        message: 'password reset successfully!!',
+        code:200});
+});
+
+
+router.get('/otp', (req,res) => {
+    let OTPUtils = require('../../components').utils.otpUtils;
+    let VerificationTypesEnum = enums.VerificationTypesEnum;
+    let code = OTPUtils.generateOTP();
+    let otpLifeTime = OTPUtils.getOTPLifeTime();
+    let data = {
+        code:code,
+        expired_at:otpLifeTime,
+        user_email:req.body.email,
+        verification_type: VerificationTypesEnum.PASSWORD_RESET
+    };
+    res.json(data);
+
+    // oAuthDao.findUserByEmail(req.body.email).then(user=>{
+    //
+    // }).catch(err => res.send(err));
+    // res.json({data: OTPUtils.generateOTP() });
+
+});
 
 
 module.exports = router;

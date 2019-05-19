@@ -20,16 +20,26 @@ let oAuthDao = function(){};
 /**
  * USER START
  */
-oAuthDao.findUserByEmail = (email, callback) => {
+oAuthDao.findUserByEmail = (email) => {
     console.log('findUserByEmail()');
-    User.findOne({
-        where:{email:email},
-        // attributes: ['id', 'username', 'password', 'scope']
-    }).then(user => {
-        callback(null, user);
-    }).catch( err => {
-        console.log("findUserByEmail - Err: ", err);
-        callback(err,null);
+    // User.findOne({
+    //     where:{email:email},
+    //     // attributes: ['id', 'username', 'password', 'scope']
+    // }).then(user => {
+    //     callback(null, user);
+    // }).catch( err => {
+    //     console.log("findUserByEmail - Err: ", err);
+    //     callback(err,null);
+    // });
+
+    return new Promise((resolve,reject) => {
+        User.findOne({
+          where:{email:email}
+        }).then(user=>{
+            resolve(user);
+        }).catch(err =>{
+            reject(err);
+        });
     });
 };
 
