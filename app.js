@@ -16,6 +16,10 @@ app.get('/',function(req, res){
 app.use('/oauth',require('./modules/oauth/oauth-controller'));
 app.use('/api',require('./routers/api-router'));
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./modules/api_doc_generator/api-doc.json');
+app.use('/api/v1/doc',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
+
 // app.use(require('./modules/mailer'));
 
 

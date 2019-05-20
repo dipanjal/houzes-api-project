@@ -33,11 +33,7 @@ router.get("/", (req,res) => {
     res.json(new ApiResponse(200,'ok',data));
 });
 
-/**
- * REGISTER oAUTH USER
- * api endpoint: http://localhost:3000/api/public/register/user
- * params: email, password, first_name, last_name
- */
+
 router.post('/register/user', validator.isUserValid,validator.isUserExist,(req,res) => {
     let body = req.body;
     let UserData = {
@@ -88,11 +84,6 @@ router.post('/register/client', validator.isOAUthClientExist,  (req,res) => {
     oAuthDao.saveOAuthClient(UserData,OAuthClientData)
         .then(response => res.json(response))
         .catch(error => res.send(error))
-
-    // oAuthDao.saveOAuthClient(UserData,OAuthClientData,(err,oAuthClient)=>{
-    //     if (err) {res.send(err)}
-    //     else{res.json(oAuthClient)}
-    // });
 });
 
 
@@ -126,10 +117,6 @@ router.get('/reset-password/token/:token', (req, res) => {
             code:200});
 });
 
-function getUUID(){
-    let uuid = require('uuid4');
-    return  uuid();
-}
 
 
 module.exports = router;

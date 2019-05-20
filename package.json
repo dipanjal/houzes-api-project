@@ -22,6 +22,8 @@
     "socket.io": "^2.2.0",
     "socketio-auth": "^0.1.1",
     "speakeasy": "^2.0.0",
+    "swagger-jsdoc": "^3.2.9",
+    "swagger-ui-express": "^4.0.4",
     "uuid4": "^1.1.4"
   },
   "devDependencies": {
