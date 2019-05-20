@@ -34,7 +34,7 @@ router.get("/", (req,res) => {
 });
 
 
-router.post('/register/user', validator.isUserValid,validator.isUserExist,(req,res) => {
+router.post('/user/register', validator.isUserValid,validator.isUserExist,(req,res) => {
     let body = req.body;
     let UserData = {
         email: body.email,
@@ -64,7 +64,7 @@ router.get('/confirm/user/token/:token', (req,res) => {
  * api endpoint: http://localhost:3000/api/public/register/client
  * params: email, password, client_name, client_id, client_secret
  */
-router.post('/register/client', validator.isOAUthClientExist,  (req,res) => {
+router.post('/client/register', validator.isOAUthClientExist,  (req,res) => {
     let responseBody = req.body;
     let UserData = {
         email: responseBody.email,

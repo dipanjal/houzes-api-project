@@ -13,7 +13,9 @@ let Response = app.response;
 
 /** GET AUTH TOKEN /oauth/token */
 router.all('/token', obtainToken);
-router.all('/revoke', obtainToken);
+
+router.all('token/refresh', obtainToken);
+router.all('token/revoke', obtainToken);
 
 function obtainToken(req, res) {
 
