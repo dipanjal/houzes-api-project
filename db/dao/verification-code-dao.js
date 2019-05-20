@@ -6,7 +6,7 @@ VerificationCodeDao = function () {};
 
 
 
-VerificationCodeDao.saveOrUpdate = (VerificationCodeData) => {
+VerificationCodeDao.save = (VerificationCodeData) => {
     console.log('save verification code');
     return new Promise( (resolve,reject) => {
         VerificationCodeModel.create({
@@ -16,8 +16,22 @@ VerificationCodeDao.saveOrUpdate = (VerificationCodeData) => {
             verification_type: VerificationCodeData.verification_type
         }).then(data => resolve(data))
             .catch(err=> reject(err));
-
     });
+};
+
+VerificationCodeDao.markAsUsed = (code,email) => {
+    // let vCodeModel = VerificationCodeModel.build({});
+    return new Promise( (resolve,reject) => {
+        console.log('mark as used');
+        VerificationCodeModel.update({
+            is_used: true,
+            where: {code:code,user_email:email,is_used: false}
+        })
+            .then(data => resolve(data))
+            .catch(err => reject(err));
+    });
+
+
 };
 
 
@@ -32,12 +46,17 @@ VerificationCodeDao.validateToken = (code, user_email) => {
                 }
             }
         }).then(verificationCode => {
-            resolve(verificationCode);
-
+            if (verificationCode){
+                VerificationCodeDao.markAsUsed(code,user_email).then(data=> resolve(data)).catch(err=>console.log(err));
+                // resolve(verificationCode);
+            }else{
+                resolve(verificationCode);
+            }
         }).catch(err => reject(err));
     });
+};
 
-
+VerificationCodeModel.invalidateTokens = () => {
 
 };
 

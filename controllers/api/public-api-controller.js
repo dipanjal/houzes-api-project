@@ -142,7 +142,7 @@ router.post('/reset-password', (req, res) => {
         };
 
         let  VerificationCodeDao = require('../../db/dao/verification-code-dao');
-        VerificationCodeDao.saveOrUpdate(dataToSave)
+        VerificationCodeDao.save(dataToSave)
             .then(verificationCodeObj => {
                 let emailData = {
                     subject: 'Hello Testing!!',
