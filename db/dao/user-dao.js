@@ -5,6 +5,23 @@ let dao = function(){};
 /**
  * USER START
  */
+
+dao.findAllUsers = () => {
+    console.log('findAllUsers()');
+    return new Promise((resolve, reject) => {
+        User.findAll({
+            attributes: ['email','phone','first_name','last_name','status']
+        }).then(users => {
+            // callback(null, users);
+            resolve(users)
+        }).catch( err => {
+            console.log("findAllUsers - Err: ", err);
+            reject(err)
+        });
+    });
+
+};
+
 dao.findUserByEmail = (email) => {
     console.log('findUserByEmail()');
     return new Promise((resolve,reject)=>{

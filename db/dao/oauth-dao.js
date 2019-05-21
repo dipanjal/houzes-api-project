@@ -39,11 +39,16 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
         where:{email:email},
         attributes: ['id', 'email', 'password', 'scope']
     }).then(user => {
-        if (hashUtlis.isEqualMD5Hash(password,user.password)){
-            callback(null, user)
-        } else {
-            callback('wrong password', null);
+        if (user){
+            if (hashUtlis.isEqualMD5Hash(password,user.password)){
+                callback(null, user)
+            } else {
+                callback('wrong password', null);
+            }
+        }else{
+            callback("wrong email or password", null);
         }
+
         // user.password === password ? callback(null, user) : callback(null,null);
         // return user.password === password ? user : null;
     }).catch( err => {

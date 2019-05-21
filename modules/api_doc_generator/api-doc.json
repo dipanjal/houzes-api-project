@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "BASE URL: `172.18.1.11:3001/api/v1`",
+    "description": "BASE URL: `172.18.1.11:3001`",
     "version": "1.0.0",
     "title": "Houzes API Doc",
     "termsOfService": "http://172.18.1.11:3001/terms/",
@@ -10,15 +10,15 @@
     }
   },
   "host": "172.18.1.11:3001",
-  "basePath": "/api/v1",
+  "basePath": "",
   "tags": [
-    {
-      "name": "OAuth",
-      "description": "Operations with Authentications"
-    },
     {
       "name": "User",
       "description": "Operations about user"
+    },
+    {
+      "name": "OAuth",
+      "description": "Operations with Authentications"
     },
     {
       "name": "Test",
@@ -27,7 +27,7 @@
   ],
   "schemes": ["http"],
   "paths": {
-    "/public/user/register": {
+    "/api/v1/public/user/register": {
       "post": {
         "tags": ["User"],
         "summary": "Sign Up User",
@@ -38,7 +38,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "/public/user/register",
+            "description": "/api/v1/public/user/register",
             "required": true,
             "schema": {
               "$ref": "#/definitions/User"
@@ -70,7 +70,7 @@
         }
       }
     },
-    "/public/client/register": {
+    "/api/v1/public/client/register": {
       "post": {
         "tags": ["OAuth"],
         "summary": "Register API Client After Sign-up",
@@ -81,7 +81,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "/public/client/register",
+            "description": "/api/v1/public/client/register",
             "required": true,
             "schema": {
               "$ref": "#/definitions/OAuthClient"
@@ -123,7 +123,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "/oauth/token",
+            "description": "/api/v1/oauth/token",
             "required": true,
             "schema": {
               "$ref": "#/definitions/OAuthTokenForm"
@@ -232,7 +232,7 @@
         }
       }
     },
-    "/test/all_tokens": {
+    "/api/v1/test/allUsers": {
       "get": {
         "tags": ["Test"],
         "summary": "Show All Tokens",
