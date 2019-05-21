@@ -73,8 +73,8 @@
     "/public/client/register": {
       "post": {
         "tags": ["OAuth"],
-        "summary": "Register Client",
-        "description": "public access",
+        "summary": "Register API Client After Sign-up",
+        "description": "This API CLIENT belongs to User",
         "operationId": "createClient",
         "produces": ["application/json"],
         "parameters": [
@@ -274,15 +274,11 @@
         "email": {"type": "string"},
         "password": {"type": "string"},
         "phone": {
-          "type": "String",
+          "type": "string",
           "value": "+1-541-754-3010"
         },
         "first_name": {"type": "string"},
-        "last_name": {"type": "string"},
-        "status": {
-          "type": "string",
-          "required": false,
-          "enum": ["pending","active"]}
+        "last_name": {"type": "string"}
       },
       "xml": {
         "name": "User"

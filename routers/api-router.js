@@ -7,7 +7,7 @@ let swaggerUi = require('../modules/api_doc_generator');
 
 router.use('/v1/test',testApis);
 router.use('/v1/public',publicApis);
-router.use('/v1/doc',swaggerUi.swaggerUiServer,swaggerUi.SwaggerUiSetup);
+router.use('/v1/endpoints',swaggerUi.swaggerUiServer,swaggerUi.SwaggerUiSetup);
 
 
 
