@@ -58,13 +58,7 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
  */
 
 oAuthDao.saveOAuthUser = (UserData, callback) => {
-    User.create({
-        email: UserData.email,
-        password: hashUtlis.generateMD5Hash(UserData.password),
-        first_name: UserData.first_name,
-        last_name: UserData.last_name,
-        scope: UserData.scope
-    }).then(user => {
+    User.create(UserData).then(user => {
         callback(null,user);
     }).catch(err => {
         callback(err,null);

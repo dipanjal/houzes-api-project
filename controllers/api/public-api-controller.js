@@ -34,13 +34,15 @@ router.get("/", (req,res) => {
 });
 
 
-router.post('/user/register', validator.isUserValid,validator.isUserExist,(req,res) => {
+router.post('/user/register', validator.isUserValid,validator.isEmailExist,(req, res) => {
+    let hashUtlis = require('../../components/utils/hash-utils');
     let body = req.body;
     let UserData = {
         email: body.email,
-        password: body.password,
+        password: hashUtlis.generateMD5Hash(body.password),
         first_name: body.first_name,
         last_name: body.last_name,
+        phone:body.phone,
         scope: body.scope == null ? 'default' : body.scope
     };
 
@@ -68,9 +70,7 @@ router.post('/client/register', validator.isOAUthClientExist,  (req,res) => {
     let responseBody = req.body;
     let UserData = {
         email: responseBody.email,
-        password: responseBody.password,
-        first_name: responseBody.first_name,
-        last_name: responseBody.last_name
+        password: responseBody.password
     };
     let OAuthClientData = {
         client_name: responseBody.client_name,

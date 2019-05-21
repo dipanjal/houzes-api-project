@@ -1,5 +1,6 @@
 
 let oAuthDao = require('../db/dao/oauth-dao');
+let UserDao = require('../db/dao/user-dao');
 let ApiResponse = require('../components/view-models').ApiResponse;
 
 let validator = function(){};
@@ -10,6 +11,8 @@ validator.isUserValid = (req,res, next) => {
 		res.json('email is required!');
 	}else if(!body.password){
 		res.json('password is required!');
+	}else if(!body.phone){
+		res.json('phone is required!');
 	}else if(!body.first_name){
 		res.json('first name is required!');
 	}else if(!body.last_name){
@@ -23,14 +26,23 @@ validator.isUserValid = (req,res, next) => {
  *	WHILE REGISTER USER
  *	CHECK IF USER ALREADY EXIST or NOT
  */
-validator.isUserExist = (req,res, next) => {
-	oAuthDao.findUserByEmail( req.body.email,(err, user) => {
-		if (user){
-			res.json(new ApiResponse(403,'email already existed, select an unique email'))
-		}else{
-			next();
-		}
-	});
+validator.isEmailExist = (req, res, next) => {
+	// UserDao.findUserByEmail( req.body.email,(err, user) => {
+	// 	if (user){
+	// 		res.json(new ApiResponse(403,'email already existed, select an unique email'))
+	// 	}else{
+	// 		next();
+	// 	}
+	// });
+
+	UserDao.findUserByEmail(req.body.email).then(user => {
+		if(user) {res.json(new ApiResponse(403,'email already existed, select an unique email'))}
+		else {next()}
+	}).catch(err => res.send(err))
+};
+
+validator.isPhoneExist = (req, res, next) => {
+
 };
 
 validator.isOAuthClientValid = (req,res, next) => {

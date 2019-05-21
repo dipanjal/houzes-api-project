@@ -51,15 +51,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": {"type":"integer", "value": 3 },
-                "email": {"type":"string", "value": "user@example.com" },
-                "password": {"type":"string", "value": "25d55ad283aa400af464c76d713c07ad"},
-                "first_name": {"type":"string", "value": "FirstName"},
-                "last_name": {"type":"string", "value": "LastName"},
-                "scope": {"type":"string", "value": "default"},
-                "updatedAt": {  "type": "string" , "value": "<timestamp>"},
-                "createdAt": {"type": "string", "value": "<timestamp>"},
-                "status": {"type": "string","value": "pending"}
+                "id": {"type":"integer"},
+                "email": {"type":"string"},
+                "password": {"type":"string"},
+                "phone": {"type":"string"},
+                "first_name": {"type":"string"},
+                "last_name": {"type":"string"},
+                "scope": {"type":"string"},
+                "updatedAt": {  "type": "string"},
+                "createdAt": {"type": "string"},
+                "status": {"type": "string"}
               }
             }
           },
@@ -231,13 +232,23 @@
         }
       }
     },
-    "Request via Token": {
+    "/test/all_tokens": {
       "get": {
         "tags": ["Test"],
-        "summary": "/test/all_tokens",
+        "summary": "Show All Tokens",
         "description": "Get All Access Tokens",
         "operationId": "getAllToken",
         "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization Token",
+            "required": true,
+            "type": "string",
+            "value": "Bearer <access_token>"
+          }
+        ],
         "responses": {
           "200": {
             "description": "ok",
@@ -245,12 +256,7 @@
               "type": "object",
               "properties": {
                 "client": {"type":"object"},
-                "user": {"type":"object"},
-                "access_token": {"type":"string", "value": "<access_token>"},
-                "refresh_token": {"type":"string", "value": "<refresh_token>"},
-                "accessTokenExpiresAt": {"type":"string", "value": "<timestamp>"},
-                "refreshTokenExpiresAt": {"type":"string", "value": "<timestamp>" },
-                "scope": {  "type": "boolean" , "value": true}
+                "user": {"type":"object"}
               }
             }
           },
@@ -267,10 +273,16 @@
       "properties": {
         "email": {"type": "string"},
         "password": {"type": "string"},
+        "phone": {
+          "type": "String",
+          "value": "+1-541-754-3010"
+        },
         "first_name": {"type": "string"},
         "last_name": {"type": "string"},
-        "status": {"type": "string","required": false,
-          "types": ["pending","active"]}
+        "status": {
+          "type": "string",
+          "required": false,
+          "enum": ["pending","active"]}
       },
       "xml": {
         "name": "User"
