@@ -32,8 +32,8 @@ module.exports.SequelizeDBConfig = {
     password: 'wsit97480',
     dialect: 'postgres', // PostgreSQL, MySQL, MariaDB, SQLite and MSSQL See more: http://docs.sequelizejs.com/en/latest/
     timezone: '+06:00',
-    // host: 'localhost',
-    host: '172.18.1.11',
+    host: 'localhost',
+    // host: '172.18.1.11',
     port: 5454
 };
 
