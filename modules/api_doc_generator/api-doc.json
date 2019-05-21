@@ -9,7 +9,7 @@
       "email": "dipwsitaus@gmail.com"
     }
   },
-  "host": "172.18.1.11:3001",
+  "host": "localhost:3000",
   "basePath": "",
   "tags": [
     {
@@ -118,17 +118,18 @@
         "summary": "Request Access Token",
         "description": "Request To Generate Access Token",
         "operationId": "requestToken",
-        "produces": ["application/json"],
+        "produces": ["application/json","application/x-www-form-urlencoded"],
         "parameters": [
           {
             "in": "body",
             "name": "body",
-            "description": "/api/v1/oauth/token",
+            "description": "/oauth/token",
             "required": true,
             "schema": {
               "$ref": "#/definitions/OAuthTokenForm"
             }
           }
+
         ],
         "responses": {
           "200": {
