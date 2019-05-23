@@ -7,18 +7,25 @@ let validator = function(){};
 
 validator.isUserValid = (req,res, next) => {
 	let body = req.body;
+	let isValid = false;
+	let message;
 	if(!body.email){
-		res.json('email is required!');
+		message = 'email is required!';
 	}else if(!body.password){
-		res.json('password is required!');
+		message = 'password is required!!';
 	}else if(!body.phone){
-		res.json('phone is required!');
+		message = 'phone is required!';
 	}else if(!body.first_name){
-		res.json('first name is required!');
+		message = 'first name is required!';
 	}else if(!body.last_name){
-		res.json('last name is required!');
+		message = 'last name is required!';
 	}else{
+		isValid = true;
 		next();
+	}
+	if(!isValid){
+		res.status(400)
+			.json(new ApiResponse(400,'missing require fields',message));
 	}
 };
 
@@ -28,33 +35,39 @@ validator.isUserValid = (req,res, next) => {
  */
 validator.isEmailExist = (req, res, next) => {
 	UserDao.findUserByEmail(req.body.email).then(user => {
-		if(user) res.json(new ApiResponse(403,'email already existed, select an unique email'));
+		if(user) res.status(403).json(new ApiResponse(403,'email already existed, select an unique email'));
 		else next();
-	}).catch(err => res.send(err))
+	}).catch(err => res.code(500).json(new ApiResponse(500,'ok',err)))
 };
 
 validator.isPhoneExist = (req, res, next) => {
 	UserDao.findUserByPhone(req.body.phone).then(user => {
-			if (user) res.json(new ApiResponse(403,'phone already existed, select an unique phone'));
+			if (user) res.status(403).json(new ApiResponse(403,'phone already existed, select an unique phone'));
 			else next();
 		})
-		.catch(err=> res.json(new ApiResponse(500,'ok',err)) );
+		.catch(err=> res.code(500).json(new ApiResponse(500,'ok',err)) );
 };
 
 validator.isOAuthClientValid = (req,res, next) => {
 	let body = req.body;
+	let isValid = false;
+	let message;
 	if(!body.email){
-		res.json('user email is required!');
+		message = 'user email is required!';
 	}else if(!body.password){
-		res.json('user password is required!');
+		message = 'user password is required!';
 	}else if(!body.client_name){
-		res.json('client name is required!');
+		message = 'client name is required!';
 	}else if(!body.client_id){
-		res.json('client id is required!');
+		message = 'client id is required!';
 	}else if(!body.client_secret){
-		res.json('client secret is required!');
+		message = 'client secret is required!';
 	}else{
+		isValid = true;
 		next();
+	}
+	if(!isValid){
+		res.status(400).send(new ApiResponse(400,'missing required fields',message));
 	}
 };
 
@@ -63,7 +76,7 @@ validator.isOAUthClientExist = (req,res, next) => {
 		if (err) {res.send(err);}
 		else if (oAuthClient){
 			let uuidUtils = require('../components').utils.uuidUtils;
-			let uuid = uuidUtils.generateUUIDWithoutDash();
+			// let uuid = uuidUtils.generateUUIDWithoutDash();
 			let shortId = uuidUtils.generateShortUUID();
 			res.json(new ApiResponse(403,'client id already in use',{suggested_client_id: shortId }));
 		}else{
