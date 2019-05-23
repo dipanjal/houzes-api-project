@@ -21,7 +21,7 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
         scope: body.scope == null ? 'default' : body.scope
     };
     UserDao.saveOAuthUser(UserData)
-        .then(user => res.json(new ApiResponse(200,'ok',user)))
+        .then(user => res.json(new ApiResponse(200,'registration successful',user)))
         .catch(err => res.json(new ApiResponse(500,'error',err)))
 });
 
