@@ -27,22 +27,18 @@ validator.isUserValid = (req,res, next) => {
  *	CHECK IF USER ALREADY EXIST or NOT
  */
 validator.isEmailExist = (req, res, next) => {
-	// UserDao.findUserByEmail( req.body.email,(err, user) => {
-	// 	if (user){
-	// 		res.json(new ApiResponse(403,'email already existed, select an unique email'))
-	// 	}else{
-	// 		next();
-	// 	}
-	// });
-
 	UserDao.findUserByEmail(req.body.email).then(user => {
-		if(user) {res.json(new ApiResponse(403,'email already existed, select an unique email'))}
-		else {next()}
+		if(user) res.json(new ApiResponse(403,'email already existed, select an unique email'));
+		else next();
 	}).catch(err => res.send(err))
 };
 
 validator.isPhoneExist = (req, res, next) => {
-
+	UserDao.findUserByPhone(req.body.phone).then(user => {
+			if (user) res.json(new ApiResponse(403,'phone already existed, select an unique phone'));
+			else next();
+		})
+		.catch(err=> res.json(new ApiResponse(500,'ok',err)) );
 };
 
 validator.isOAuthClientValid = (req,res, next) => {

@@ -10,22 +10,12 @@ router.get('/',authenticator,(req,res)=>{
 });
 
 router.get('/allUsers',authenticator,(req,res)=>{
-    // let oAuthDao = require('../../db/dao/oauth-dao');
     let UserDao = require('../../db/dao/user-dao');
-    // UserDao.findAllUsers((err,Users) => {
-    //     if(err) res.send(err);
-    //     else res.json(Users);
-    // });
-
     UserDao.findAllUsers()
         .then(users => {
-            if(users) {
-                res.json(new ApiResponse(200,'ok',users));
-            }else{
-                res.json(new ApiResponse(400,'no user found'));
-            }
+            res.json(new ApiResponse(200,'ok',users));
         }).catch(err => {
-            res.send(err);
+            res.json(new ApiResponse(500,'err',err));
         });
 });
 

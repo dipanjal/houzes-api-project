@@ -9,8 +9,12 @@ let viewModels = require('../../components/view-models');
 let ApiResponse = viewModels.ApiResponse;
 
 const oAuthDao = require('../../db/dao/oauth-dao');
+const UserDao = require('../../db/dao/user-dao');
 const validator = require('../../middlewares/validator');
 
+let isUserValid = validator.isUserValid;
+let isEmailExist = validator.isEmailExist;
+let isPhoneExist = validator.isPhoneExist;
 
 /**
  * api endpoint: http://localhost:3000/api/public/register/user
@@ -34,7 +38,7 @@ router.get("/", (req,res) => {
 });
 
 
-router.post('/user/register', validator.isUserValid,validator.isEmailExist,(req, res) => {
+router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) => {
     let hashUtlis = require('../../components/utils/hash-utils');
     let body = req.body;
     let UserData = {
@@ -45,16 +49,9 @@ router.post('/user/register', validator.isUserValid,validator.isEmailExist,(req,
         phone:body.phone,
         scope: body.scope == null ? 'default' : body.scope
     };
-
-    oAuthDao.saveOAuthUser(UserData, (err, oAuthUser) => {
-        if (err){
-            res.json(err.message)
-        }
-        else{
-            res.json(new ApiResponse(200,'ok',oAuthUser));
-        }
-        
-    });
+    UserDao.saveOAuthUser(UserData)
+        .then(user => res.json(new ApiResponse(200,'ok',user)))
+        .catch(err => res.json(new ApiResponse(500,'error',err)))
 });
 
 router.get('/confirm/user/token/:token', (req,res) => {

@@ -12,8 +12,9 @@ dao.findAllUsers = () => {
         User.findAll({
             attributes: ['email','phone','first_name','last_name','status']
         }).then(users => {
-            // callback(null, users);
-            resolve(users)
+            resolve(users);
+            // if(users) resolve(users);
+            // else reject('no user found');
         }).catch( err => {
             console.log("findAllUsers - Err: ", err);
             reject(err)
@@ -22,7 +23,7 @@ dao.findAllUsers = () => {
 
 };
 
-dao.findUserByEmail = (email) => {
+dao.findUserByEmail = email => {
     console.log('findUserByEmail()');
     return new Promise((resolve,reject)=>{
         User.findOne({
@@ -37,56 +38,55 @@ dao.findUserByEmail = (email) => {
 
 };
 
-dao.findUserByPhone = (phone, callback) => {
-    console.log('findUserByEmail()');
-    User.findOne({
-        where:{phone:phone},
-        // attributes: ['id', 'username', 'password', 'scope']
-    }).then(user => {
-        callback(null, user);
-    }).catch( err => {
-        console.log("findUserByEmail - Err: ", err);
-        callback(err,null);
+dao.findUserByPhone = phone => {
+    console.log('findUserByPhone()');
+    return new Promise((resolve, reject) => {
+        User.findOne({
+            where:{phone:phone}
+        }).then(user => {
+            resolve(user)
+            // if (user) resolve(user);
+            // else reject('no user found');
+        }).catch( err => {
+            console.log("findUserByEmail - Err: ", err);
+            reject(err);
+        });
     });
+
+
 };
 
-dao.findUserByEmailAndPassword = (email, password, callback) => {
-    console.log('findUserByEmail()');
-    User.findOne({
-        where:{email:email},
-        attributes: ['id', 'email', 'password', 'scope']
-    }).then(user => {
-
-        if (hashUtlis.isEqualMD5Hash(password,user.password)){
-            callback(null, user)
-        } else {
-            callback('wrong password', null);
-        }
-        // user.password === password ? callback(null, user) : callback(null,null);
-        // return user.password === password ? user : null;
-    }).catch( err => {
-        console.log("findUserByEmailAndPassword - Err: ", err);
-        callback(err,null);
-        // return null;
+dao.findUserByEmailAndPassword = (email, password) => {
+    console.log('findUserByEmail&Pass()');
+    return new Promise( (resolve, reject) => {
+        User.findOne({
+            where:{email:email},
+            attributes: ['id', 'email', 'password', 'scope']
+        }).then(user => {
+            if (hashUtlis.isEqualMD5Hash(password,user.password)){
+                resolve(user);
+            } else {
+                reject('wrong password');
+            }
+        }).catch( err => {
+            console.log("findUserByEmailAndPassword - Err: ", err);
+            reject(err);
+        });
     });
+
 };
 
 /**
  * User ==> saveOAuthUser()
  */
 
-dao.saveOAuthUser = (UserData, callback) => {
-    User.create({
-        email: UserData.email,
-        password: hashUtlis.generateMD5Hash(UserData.password),
-        first_name: UserData.first_name,
-        last_name: UserData.last_name,
-        scope: UserData.scope,
-        phone: UserData.phone
-    }).then(user => {
-        callback(null,user);
-    }).catch(err => {
-        callback(err,null);
+dao.saveOAuthUser = (UserData) => {
+    return new Promise((resolve, reject) => {
+        User.create(UserData).then(user => {
+            resolve(user);
+        }).catch(err => {
+            reject(err);
+        });
     });
 };
 
