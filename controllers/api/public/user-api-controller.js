@@ -22,7 +22,39 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
     };
     UserDao.saveOAuthUser(UserData)
         .then(user => res.json(new ApiResponse(200,'ok',user)))
-        .catch(err => res.json(new ApiResponse(500,'error',err)))
+        .catch(err => res.code(err.code||500).json(new ApiResponse(err.code||500,err.message)));
+});
+
+router.post('/reset-password', (req, res) => {
+    UserDao.findUserByEmail(req.body.email).then(user=>{
+        user = user.toJSON();
+        delete user.password;
+
+        let otpUtils = require('../../../components').utils.otpUtils;
+        let otp = otpUtils.generateOTP();
+        let data = {
+            subject: 'Hello Testing!!',
+            token: otp,
+            url: `http://localhost:3000/api/v1/public/reset-password/token/${otp}`
+        };
+
+        let mailer = require('../../modules/mailer');
+        mailer.sendPasswordResetEmail(user, data,(err, mailResp) => {
+            if(err){res.send(err)}
+            else{res.json(mailResp)}
+        });
+    }).catch(err => {
+        let errCode = err.code||500;
+        res.status(errCode).json(new ApiResponse(errCode,err.message));
+    });
+});
+
+router.get('/reset-password/token/:token', (req, res) => {
+    res.json({
+        uuid:req.params.token,
+        message: 'password reset successfully!!',
+        code:200
+    });
 });
 
 module.exports = router;

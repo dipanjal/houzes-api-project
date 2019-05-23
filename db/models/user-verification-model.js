@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 let sequelize = require('../connectors/seq-pg-connector');
 
-class VerificationCode extends Sequelize.Model {}
-VerificationCode.init({
+class UserVerification extends Sequelize.Model {}
+UserVerification.init({
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -20,8 +20,8 @@ VerificationCode.init({
     },
     {
         sequelize,
-        modelName: 'VerificationCode',
-        tableName: 'verification_codes'
+        modelName: 'UserVerification',
+        tableName: 'user_verification'
     });
 
-module.exports = VerificationCode;
+module.exports = UserVerification;

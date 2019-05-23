@@ -1,5 +1,4 @@
-/*
-module.exports.SequelizeDBConfig = {
+/*module.exports.SequelizeDBConfig = {
     database: 'ra_houzes',
     username: 'postgres',
     password: 'abc123',
@@ -8,8 +7,7 @@ module.exports.SequelizeDBConfig = {
     timezone: '+06:00',
     host: 'localhost',
     port: 5432
-};
-*/
+};*/
 
 // module.exports.SequelizeDBConfig = {
 //     database: 'ra_houzes',

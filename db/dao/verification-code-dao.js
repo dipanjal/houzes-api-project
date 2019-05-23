@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 let sequelize = require('../connectors/seq-pg-connector');
-let VerificationCodeModel = require('../models').VerificationCodeModel;
+let UserVerificationModel = require('../models').UserVerificationModel;
 
 VerificationCodeDao = function () {};
 
@@ -9,7 +9,7 @@ VerificationCodeDao = function () {};
 VerificationCodeDao.save = (VerificationCodeData) => {
     console.log('save verification code');
     return new Promise( (resolve,reject) => {
-        VerificationCodeModel.create({
+        UserVerificationModel.create({
             code:VerificationCodeData.code,
             user_email: VerificationCodeData.user_email,
             expired_at: VerificationCodeData.expired_at,
@@ -20,10 +20,10 @@ VerificationCodeDao.save = (VerificationCodeData) => {
 };
 
 VerificationCodeDao.markAsUsed = (code,email) => {
-    // let vCodeModel = VerificationCodeModel.build({});
+    // let vCodeModel = UserVerificationModel.build({});
     return new Promise( (resolve,reject) => {
         console.log('mark as used');
-        VerificationCodeModel.update({
+        UserVerificationModel.update({
             is_used: true,
             where: {code:code,user_email:email,is_used: false}
         })
@@ -37,7 +37,7 @@ VerificationCodeDao.markAsUsed = (code,email) => {
 
 VerificationCodeDao.validateToken = (code, user_email) => {
     return new Promise((resolve,reject) => {
-        VerificationCodeModel.findOne({
+        UserVerificationModel.findOne({
             where:{
                 code:code,
                 user_email: user_email,
@@ -56,7 +56,7 @@ VerificationCodeDao.validateToken = (code, user_email) => {
     });
 };
 
-VerificationCodeModel.invalidateTokens = () => {
+UserVerificationModel.invalidateTokens = () => {
 
 };
 

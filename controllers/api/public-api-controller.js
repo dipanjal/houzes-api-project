@@ -108,11 +108,7 @@ router.use(require('./public/auth-api-controller'));
 //     });
 // });
 
-// router.get('/reset-password/token/:token', (req, res) => {
-//     res.json({ uuid:req.params.token,
-//             message: 'password reset successfully!!',
-//             code:200});
-// });
+
 
 
 
