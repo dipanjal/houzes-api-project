@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const authenticator = require('../../modules/oauth/middleware/authenticator');
+const ApiResponse = require('../../components').viewModels.ApiResponse;
 
 router.get('/',authenticator,(req,res)=>{
     let data = {
@@ -8,12 +9,14 @@ router.get('/',authenticator,(req,res)=>{
     res.json(data);
 });
 
-router.get('/all_tokens',authenticator,(req,res)=>{
-    let oAuthDao = require('../../db/dao/oauth-dao');
-    oAuthDao.findAllAccessTokens((err,oAuthAccessTokens) => {
-        if(err) res.send(err);
-        res.json(oAuthAccessTokens);
-    });
+router.get('/allUsers',authenticator,(req,res)=>{
+    let UserDao = require('../../db/dao/user-dao');
+    UserDao.findAllUsers()
+        .then(users => {
+            res.json(new ApiResponse(200,'ok',users));
+        }).catch(err => {
+            res.json(new ApiResponse(500,'err',err));
+        });
 });
 
 

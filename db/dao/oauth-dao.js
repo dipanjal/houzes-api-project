@@ -20,26 +20,16 @@ let oAuthDao = function(){};
 /**
  * USER START
  */
-oAuthDao.findUserByEmail = (email) => {
+oAuthDao.findUserByEmail = (email, callback) => {
     console.log('findUserByEmail()');
-    // User.findOne({
-    //     where:{email:email},
-    //     // attributes: ['id', 'username', 'password', 'scope']
-    // }).then(user => {
-    //     callback(null, user);
-    // }).catch( err => {
-    //     console.log("findUserByEmail - Err: ", err);
-    //     callback(err,null);
-    // });
-
-    return new Promise((resolve,reject) => {
-        User.findOne({
-          where:{email:email}
-        }).then(user=>{
-            resolve(user);
-        }).catch(err =>{
-            reject(err);
-        });
+    User.findOne({
+        where:{email:email},
+        // attributes: ['id', 'username', 'password', 'scope']
+    }).then(user => {
+        callback(null, user);
+    }).catch( err => {
+        console.log("findUserByEmail - Err: ", err);
+        callback(err,null);
     });
 };
 
@@ -49,11 +39,16 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
         where:{email:email},
         attributes: ['id', 'email', 'password', 'scope']
     }).then(user => {
-        if (hashUtlis.isEqualMD5Hash(password,user.password)){
-            callback(null, user)
-        } else {
-            callback('wrong password', null);
+        if (user){
+            if (hashUtlis.isEqualMD5Hash(password,user.password)){
+                callback(null, user)
+            } else {
+                callback('wrong password', null);
+            }
+        }else{
+            callback("wrong email or password", null);
         }
+
         // user.password === password ? callback(null, user) : callback(null,null);
         // return user.password === password ? user : null;
     }).catch( err => {
@@ -68,13 +63,7 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
  */
 
 oAuthDao.saveOAuthUser = (UserData, callback) => {
-    User.create({
-        email: UserData.email,
-        password: hashUtlis.generateMD5Hash(UserData.password),
-        first_name: UserData.first_name,
-        last_name: UserData.last_name,
-        scope: UserData.scope
-    }).then(user => {
+    User.create(UserData).then(user => {
         callback(null,user);
     }).catch(err => {
         callback(err,null);
