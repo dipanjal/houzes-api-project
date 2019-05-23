@@ -9,7 +9,7 @@
       "email": "dipwsitaus@gmail.com"
     }
   },
-  "host": "localhost:3000",
+  "host": "172.18.1.11:3001",
   "basePath": "",
   "tags": [
     {

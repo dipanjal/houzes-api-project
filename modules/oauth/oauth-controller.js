@@ -11,9 +11,10 @@ let oauth = app.oauth;
 let Request = app.request;
 let Response = app.response;
 
+let ApiResponse = require('../../components/view-models').ApiResponse;
+
 /** GET AUTH TOKEN /oauth/token */
 router.all('/token', obtainToken);
-
 router.all('token/refresh', obtainToken);
 router.all('token/revoke', obtainToken);
 
@@ -28,10 +29,10 @@ function obtainToken(req, res) {
 		.then(function(token) {
             delete token.accessToken;
             delete token.refreshToken;
-			// console.log(token);
-			res.json(token);
+			res.json(new ApiResponse(200,'ok',token));
 		}).catch(function(err) {
-			res.status(err.code || 500).json(err);
+			let code = err.code || 500;
+			res.status(code).json(new ApiResponse(code,err.message,err));
 		});
 }
 

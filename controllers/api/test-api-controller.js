@@ -6,7 +6,7 @@ router.get('/',authenticator,(req,res)=>{
     let data = {
         message: 'welcome to private zone :3'
     };
-    res.json(data);
+    res.json(new ApiResponse(200,'ok',data));
 });
 
 router.get('/allUsers',authenticator,(req,res)=>{
