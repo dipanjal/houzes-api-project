@@ -30,7 +30,7 @@ User.init({
         unique:true,
         validate:{
             validatePhone: (value) => {
-                if(!US_PHONE_ENUM.pattern.test(value)){
+                if(!new RegExp(US_PHONE_ENUM.pattern).test(value)){
                     throw new Error(US_PHONE_ENUM.message+` EX: (${US_PHONE_ENUM.sample})` );
                 }
             }
