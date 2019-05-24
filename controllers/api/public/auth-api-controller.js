@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+let ApiResponse = require('../../../components/view-models').ApiResponse;
 const isOAUthClientExist = require('../../../middlewares/validator').isOAUthClientExist;
 const oAuthDao = require('../../../db/dao/oauth-dao');
 
@@ -24,8 +24,8 @@ router.post('/client/register', isOAUthClientExist,  (req,res) => {
      * Using Promise
      */
     oAuthDao.saveOAuthClient(UserData,OAuthClientData)
-        .then(response => res.json(response))
-        .catch(error => res.send(error))
+        .then(response => res.json(new ApiResponse(200,'Client Created Successfully!',response)))
+        .catch(error => res.code(500).json(new ApiResponse(500,error.message,error)));
 });
 
 module.exports = router;
