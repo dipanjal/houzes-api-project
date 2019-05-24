@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../connectors/seq-pg-connector');
-let UserVerificationModel = require('../models').UserVerificationModel;
+let sequelize = require('../connectors/seq-pg-connector'),
+    UserVerificationModel = require('../models').UserVerificationModel,
+    UserModel = require('../../modules/oauth/sequlizer_models').User;
 
 VerificationCodeDao = function () {};
 
@@ -9,12 +10,8 @@ VerificationCodeDao = function () {};
 VerificationCodeDao.save = (VerificationCodeData) => {
     console.log('save verification code');
     return new Promise( (resolve,reject) => {
-        UserVerificationModel.create({
-            code:VerificationCodeData.code,
-            user_email: VerificationCodeData.user_email,
-            expired_at: VerificationCodeData.expired_at,
-            verification_type: VerificationCodeData.verification_type
-        }).then(data => resolve(data))
+        UserVerificationModel.create(VerificationCodeData)
+            .then(data => resolve(data))
             .catch(err=> reject(err));
     });
 };
@@ -35,20 +32,22 @@ VerificationCodeDao.markAsUsed = (code,email) => {
 };
 
 
-VerificationCodeDao.validateToken = (code, user_email) => {
+VerificationCodeDao.validateToken = (code) => {
     return new Promise((resolve,reject) => {
         UserVerificationModel.findOne({
             where:{
                 code:code,
-                user_email: user_email,
-                expired_at: {
-                    [Sequelize.Op.gte]:new Date()
-                }
-            }
+                is_used:false
+                // expired_at: {[Sequelize.Op.gte]:new Date()}
+            },
+            include: [{
+                model:UserModel,
+                attributes: ['id', 'email', 'first_name', 'last_name']
+            }]
         }).then(verificationCode => {
             if (verificationCode){
-                VerificationCodeDao.markAsUsed(code,user_email).then(data=> resolve(data)).catch(err=>console.log(err));
-                // resolve(verificationCode);
+                // VerificationCodeDao.markAsUsed(code,user_email).then(data=> resolve(data)).catch(err=>console.log(err));
+                resolve(verificationCode);
             }else{
                 resolve(verificationCode);
             }

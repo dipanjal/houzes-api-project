@@ -11,8 +11,8 @@ UserVerification.init({
             unique: true,
         },
         code: Sequelize.TEXT,
-        user_email: Sequelize.TEXT,
-        expired_at: Sequelize.TIME,
+        user_id: Sequelize.INTEGER,
+        expires_at: Sequelize.TIME,
         is_used: Sequelize.BOOLEAN,
         verification_type: Sequelize.TEXT,
         createdAt: Sequelize.TIME,
@@ -21,7 +21,7 @@ UserVerification.init({
     {
         sequelize,
         modelName: 'UserVerification',
-        tableName: 'user_verification'
+        tableName: 'user_verifications'
     });
 
 module.exports = UserVerification;
