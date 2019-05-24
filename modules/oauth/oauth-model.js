@@ -235,20 +235,29 @@ function getRefreshToken(refreshToken) {
         .findOne({
             attributes: ['client_id', 'user_id', 'expires'],
             where: {refresh_token: refreshToken},
-            include: [OAuthClient, User]
+            include: [OAuthClient, {
+                model:User,
+                attributes: ['id', 'email', 'password', 'scope']
+            }]
 
         })
         .then(function (savedRT) {
             // console.log(savedRT);
-            var tokenTemp = {
-                user: savedRT ? savedRT.user.toJSON() : {},
-                client: savedRT ? savedRT.oauth_client.toJSON() : {},
-                refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
-                refreshToken: refreshToken,
-                refresh_token: refreshToken,
-                scope: savedRT.scope
-            };
-            return tokenTemp;
+            if (savedRT){
+                let tokenTemp = {
+                    user: savedRT ? savedRT.user.toJSON() : {},
+                    client: savedRT ? savedRT.oauth_client.toJSON() : {},
+                    refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
+                    refreshToken: refreshToken,
+                    refresh_token: refreshToken,
+                    scope: savedRT.scope
+                };
+                return tokenTemp;
+            }else{
+                console.log('getRefreshToken() => refresh_token is null/expired')
+                return null;
+            }
+
 
         }).catch(function (err) {
             console.log("getRefreshToken - Err: ", err)

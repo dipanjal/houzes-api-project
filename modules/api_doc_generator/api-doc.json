@@ -164,7 +164,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "/oauth/token",
+            "description": "/oauth/token/refresh",
             "required": true,
             "schema": {
               "$ref": "#/definitions/RefreshTokenForm"
@@ -204,7 +204,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "/oauth/revoke",
+            "description": "/oauth/token/revoke",
             "required": true,
             "schema": {
               "$ref": "#/definitions/RefreshTokenForm"
