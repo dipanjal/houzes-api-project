@@ -27,6 +27,7 @@ function obtainToken(req, res) {
 	console.log('obtainToken()');
 	return oauth.token(request, response)
 		.then(function(token) {
+			delete token.user.password;
             delete token.accessToken;
             delete token.refreshToken;
 			res.json(new ApiResponse(200,'ok',token));
@@ -35,7 +36,5 @@ function obtainToken(req, res) {
 			res.status(code).json(new ApiResponse(code,err.message,err));
 		});
 }
-
-
 
 module.exports = router;
