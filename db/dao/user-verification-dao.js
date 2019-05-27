@@ -17,7 +17,6 @@ VerificationCodeDao.save = (VerificationCodeData) => {
 };
 
 VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
-    // let vCodeModel = UserVerificationModel.build({});
     return new Promise( (resolve,reject) => {
         console.log('mark as used');
         verificationCodeModel.update(
@@ -42,13 +41,14 @@ VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
 };
 
 
-VerificationCodeDao.validateToken = (code) => {
+VerificationCodeDao.validateToken = (code, type) => {
     return new Promise((resolve,reject) => {
         UserVerificationModel.findOne({
             where:{
                 code:code,
                 is_used:false,
-                expires_at: {[Sequelize.Op.gte]:new Date()}
+                verification_type: type,
+                // expires_at: {[Sequelize.Op.gte]:new Date()}
             },
             include: [{
                 model:UserModel,

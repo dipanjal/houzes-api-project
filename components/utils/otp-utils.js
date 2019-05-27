@@ -16,7 +16,7 @@ otpUtils.generateOTP = ()=>{
 
 otpUtils.getOTPLifeTime = () => {
     let moment = Moment();
-    let expiredAt = Moment(moment).add(2,'minutes');
+    let expiredAt = Moment(moment).add(5,'minutes');
     return expiredAt.format();
 };
 

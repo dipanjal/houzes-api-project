@@ -5,11 +5,16 @@
 
 const router = require('express').Router();
 
-let hashUtlis = require('../../../components/utils/hash-utils');
+
 const UserDao = require('../../../db/dao/user-dao'),
     UserVerificationDao = require('../../../db/dao/user-verification-dao'),
     validator = require('../../../middlewares/validator'),
-    ApiResponse = require('../../../components/view-models').ApiResponse;
+    verificationTypes = require('../../../components/enums/verification-types-enum');
+
+let hashUtlis = require('../../../components/utils/hash-utils'),
+    ApiResponse = require('../../../components/view-models').ApiResponse,
+    mailer = require('../../../modules/mailer'),
+    otpUtils = require('../../../components/utils/otp-utils');
 
 let isUserValid = validator.isUserValid;
 let isEmailExist = validator.isEmailExist;
@@ -27,38 +32,79 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
         scope: body.scope == null ? 'default' : body.scope
     };
     UserDao.saveOAuthUser(UserData)
-        .then(user => res.json(new ApiResponse(200,'registration successful',user)))
-        .catch(err => res.json(new ApiResponse(500,'error',err)))
+        .then(user => {
+            // res.json(new ApiResponse(200,'registration successful',user))
+            let opt = otpUtils.generateOTP();
+
+            let data = {
+                subject: 'Houzes- User Verification!!',
+                token: opt,
+                url: `http://localhost:3000/api/v1/public/reset-password/token/${opt}`
+            };
+            mailer.sendUserVerificationEmail(user, data,(err, mailResp) => {
+                if(err){res.status(err.code||500).json(new ApiResponse(err.code||500,err.message))}
+                else{
+                    let otpData = {
+                        code:data.token,
+                        user_id: user.id,
+                        expires_at: otpUtils.getOTPLifeTime(),
+                        verification_type:verificationTypes.USER_VERIFICATION
+                    };
+                    UserVerificationDao.save(otpData).then(data => {
+                        res.json(new ApiResponse(200,
+                            'A verification link has been send to your email, please confirm your account',
+                            data));
+                    }).catch(err => {
+                        res.status(err.code).send(err);
+                    });
+                }
+            });
+        }).catch(err => res.json(new ApiResponse(500,'error',err)))
 });
 
-router.post('/reset-password', (req, res) => {
+router.get('/user/verify/token/:token', (req,res) => {
+    UserVerificationDao.validateToken(req.params.token, verificationTypes.PASSWORD_RESET)
+        .then(verificationData => {
+            if (verificationData) {
+                UserDao.activeateUser(verificationData.user_id).then(userData => {
+                    res.json(new ApiResponse(200,'User Activated',userData));
+                }).catch( err => {
+                    res.send(err)
+                });
+            }
+            else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
+        }).catch(err => {
+            let errCode = err.code || 500;
+            res.status(errCode).json(new ApiResponse(errCode,err.message))
+    });
+});
+
+
+
+
+router.post('/user/request-password-reset', (req, res) => {
     UserDao.findUserByEmail(req.body.email).then(user => {
         if(user){
             user = user.toJSON();
             delete user.password;
 
-            let otpUtils = require('../../../components').utils.otpUtils;
             let opt = otpUtils.generateOTP();
 
             let data = {
-                subject: 'Hello Testing!!',
+                subject: 'Houzes-Password Reset',
                 token: opt,
-                url: `http://localhost:3000/api/v1/public/reset-password/token/${opt}`
+                url: `http://localhost:3000/api/v1/public/user/reset-password/token/${opt}`
             };
 
-            let mailer = require('../../../modules/mailer');
             mailer.sendPasswordResetEmail(user, data,(err, mailResp) => {
                 if(err){res.status(err.code).send(err)}
                 else{
-                    let verificationTypes = require('../../../components/enums/verification-types-enum');
-
                     let otpData = {
                         code:data.token,
                         user_id: user.id,
                         expires_at: otpUtils.getOTPLifeTime(),
                         verification_type:verificationTypes.PASSWORD_RESET
                     };
-
                     UserVerificationDao.save(otpData).then(data => {
                         res.json(new ApiResponse(200,'email sent successfully!',data));
                     }).catch(err => {
@@ -77,10 +123,10 @@ router.post('/reset-password', (req, res) => {
     });
 });
 
-router.get('/reset-password/token/:token', (req,res) => {
+router.get('/user/reset-password/token/:token', (req,res) => {
     UserVerificationDao.validateToken(req.params.token).then(data => {
         if (data) res.json(new ApiResponse(200,'user verified! ',data));
-        else res.status(401).json(new ApiResponse(401,'token expired!'));
+        else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
     }).catch(err => {
         let errCode = err.code || 500;
         res.status(errCode).json(new ApiResponse(errCode,err.message))
