@@ -82,7 +82,8 @@ router.get('/reset-password/token/:token', (req,res) => {
         if (data) res.json(new ApiResponse(200,'user verified! ',data));
         else res.status(401).json(new ApiResponse(401,'token expired!'));
     }).catch(err => {
-        res.status(err.code).json(new ApiResponse(err.code,err.message))
+        let errCode = err.code || 500;
+        res.status(errCode).json(new ApiResponse(errCode,err.message))
     });
 });
 

@@ -28,13 +28,13 @@ VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
         }).catch(err => {
             reject(err);
         });
-        // UserVerificationModel.update({
-        //     is_used: true,
-        //     where: {code:code,user_email:email,is_used: false}
-        // })
-        //     .then(data => resolve(data))
-        //     .catch(err => reject(err));
 
+        // {
+        //     where: {
+        //         code:verificationCodeModel.code,
+        //             user_id:verificationCodeModel.user.id
+        //     }
+        // }
 
     });
 
@@ -48,7 +48,7 @@ VerificationCodeDao.validateToken = (code) => {
             where:{
                 code:code,
                 is_used:false,
-                // expired_at: {[Sequelize.Op.gte]:new Date()}
+                expires_at: {[Sequelize.Op.gte]:new Date()}
             },
             include: [{
                 model:UserModel,
@@ -56,14 +56,22 @@ VerificationCodeDao.validateToken = (code) => {
             }]
         }).then(verificationCode => {
             if (verificationCode){
-
-                VerificationCodeDao.markAsUsed(verificationCode)
-                    .then(data=> resolve(data))
-                    .catch(err=>reject(err));
-                // resolve(verificationCode);
+                // VerificationCodeDao.markAsUsed(verificationCode)
+                //     .then(data => {
+                //         console.log('data received');
+                //         resolve(data);
+                //     })
+                //     .catch(err=>reject(err));
+                /**
+                 * update the verification code
+                 */
+                return verificationCode.update({is_used: true},{where: verificationCode.id});
             }else{
                 resolve(verificationCode);
             }
+        }).then(updated => {
+            // console.log('verification code updated!!');
+            resolve(updated);
         }).catch(err => reject(err));
     });
 };
