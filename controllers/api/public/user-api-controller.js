@@ -1,3 +1,8 @@
+/**
+ * url: /api/v1/public/
+ * @type {Router}
+ */
+
 const router = require('express').Router();
 
 let hashUtlis = require('../../../components/utils/hash-utils');
@@ -73,9 +78,9 @@ router.post('/reset-password', (req, res) => {
 });
 
 router.get('/reset-password/token/:token', (req,res) => {
-    // res.send();
     UserVerificationDao.validateToken(req.params.token).then(data => {
-        res.json(new ApiResponse(200,'ok',data));
+        if (data) res.json(new ApiResponse(200,'user verified! ',data));
+        else res.status(401).json(new ApiResponse(401,'token expired!'));
     }).catch(err => {
         res.status(err.code).json(new ApiResponse(err.code,err.message))
     });

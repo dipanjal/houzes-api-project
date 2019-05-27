@@ -16,16 +16,26 @@ VerificationCodeDao.save = (VerificationCodeData) => {
     });
 };
 
-VerificationCodeDao.markAsUsed = (code,email) => {
+VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
     // let vCodeModel = UserVerificationModel.build({});
     return new Promise( (resolve,reject) => {
         console.log('mark as used');
-        UserVerificationModel.update({
-            is_used: true,
-            where: {code:code,user_email:email,is_used: false}
-        })
-            .then(data => resolve(data))
-            .catch(err => reject(err));
+        verificationCodeModel.update(
+            {is_used: true},
+            {where: verificationCodeModel.id}
+        ).then(data => {
+            resolve(data);
+        }).catch(err => {
+            reject(err);
+        });
+        // UserVerificationModel.update({
+        //     is_used: true,
+        //     where: {code:code,user_email:email,is_used: false}
+        // })
+        //     .then(data => resolve(data))
+        //     .catch(err => reject(err));
+
+
     });
 
 
@@ -37,7 +47,7 @@ VerificationCodeDao.validateToken = (code) => {
         UserVerificationModel.findOne({
             where:{
                 code:code,
-                is_used:false
+                is_used:false,
                 // expired_at: {[Sequelize.Op.gte]:new Date()}
             },
             include: [{
@@ -46,8 +56,11 @@ VerificationCodeDao.validateToken = (code) => {
             }]
         }).then(verificationCode => {
             if (verificationCode){
-                // VerificationCodeDao.markAsUsed(code,user_email).then(data=> resolve(data)).catch(err=>console.log(err));
-                resolve(verificationCode);
+
+                VerificationCodeDao.markAsUsed(verificationCode)
+                    .then(data=> resolve(data))
+                    .catch(err=>reject(err));
+                // resolve(verificationCode);
             }else{
                 resolve(verificationCode);
             }
