@@ -39,7 +39,7 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
             let data = {
                 subject: 'Houzes- User Verification!!',
                 token: opt,
-                url: `${BaseUrls.dev}/api/v1/public/user/verify/token/${opt}`
+                url: `http://${BaseUrls.dev}/api/v1/public/user/verify/token/${opt}`
             };
 
             mailer.sendUserVerificationEmail(user, data,(err, mailResp) => {
@@ -94,7 +94,7 @@ router.post('/user/request-password-reset', (req, res) => {
             let data = {
                 subject: 'Houzes-Password Reset',
                 token: opt,
-                url: `${BaseUrls.dev}/api/v1/public/user/reset-password/token/${opt}`
+                url: `http://${BaseUrls.dev}/api/v1/public/user/reset-password/token/${opt}`
             };
 
             mailer.sendPasswordResetEmail(user, data,(err, mailResp) => {

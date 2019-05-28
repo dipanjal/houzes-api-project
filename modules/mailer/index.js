@@ -45,7 +45,9 @@ function sendEmail(HelperOptions,callback){
         if(error) {
             // console.log(error);
             callback(error,null);
+        }else{
+            console.log('email send to ',HelperOptions.to);
+            callback(null,info);
         }
-        callback(null,info);
     });
 }
