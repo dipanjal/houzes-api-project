@@ -39,3 +39,8 @@ module.exports.SequelizeDBConfig = {
 };
 
 module.exports.otpLifeTime = (60*60*24)*2;
+
+module.exports.baseURLs = {
+    local:'localhost:3000',
+    dev:'58.84.34.65:3001'
+};

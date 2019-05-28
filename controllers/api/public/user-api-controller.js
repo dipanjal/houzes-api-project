@@ -20,6 +20,8 @@ let isUserValid = validator.isUserValid;
 let isEmailExist = validator.isEmailExist;
 let isPhoneExist = validator.isPhoneExist;
 
+let BaseUrls = require('../../../config').baseURLs;
+
 router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) => {
     let body = req.body;
     let UserData = {
@@ -37,7 +39,7 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
             let data = {
                 subject: 'Houzes- User Verification!!',
                 token: opt,
-                url: `http://localhost:3000/api/v1/public/user/verify/token/${opt}`
+                url: `${BaseUrls.dev}/api/v1/public/user/verify/token/${opt}`
             };
 
             mailer.sendUserVerificationEmail(user, data,(err, mailResp) => {
@@ -92,7 +94,7 @@ router.post('/user/request-password-reset', (req, res) => {
             let data = {
                 subject: 'Houzes-Password Reset',
                 token: opt,
-                url: `http://localhost:3000/api/v1/public/user/reset-password/token/${opt}`
+                url: `${BaseUrls.dev}/api/v1/public/user/reset-password/token/${opt}`
             };
 
             mailer.sendPasswordResetEmail(user, data,(err, mailResp) => {
