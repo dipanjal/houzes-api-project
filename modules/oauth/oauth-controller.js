@@ -16,8 +16,8 @@ let ApiResponse = require('../../components/view-models').ApiResponse;
 
 /** GET AUTH TOKEN /oauth/token */
 router.all('/token',isUserActivated, obtainToken);
-router.all('/token/refresh',isUserActivated, obtainToken);
-router.all('/token/revoke',isUserActivated, obtainToken);
+router.all('/token/refresh', obtainToken);
+router.all('/token/revoke', obtainToken);
 
 function obtainToken(req, res) {
 
