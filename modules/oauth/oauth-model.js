@@ -23,7 +23,12 @@ function getAccessToken(bearerToken) {
         //   model: User,
         //   attributes: ['id', 'username'],
         // }, OAuthClient
-          User,OAuthClient
+          OAuthClient,User
+          // {
+          //     model: User,
+          //     where:{status:'activated'}
+          // }
+
       ]
     })
     .then(function (accessToken) {

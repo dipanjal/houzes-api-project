@@ -3,7 +3,7 @@ let MailConfig = require('./email-config');
 let gmailTransport = MailConfig.GmailTransport;
 
 module.exports.sendPasswordResetEmail = (user, data, callback) => {
-    MailConfig.ViewOption(gmailTransport,hbs);
+    MailConfig.ViewOption(gmailTransport,hbs, 'forgot-password-email.html');
     let HelperOptions = {
         from: '"Dip Wsit" <dipwsitaus@gmail.com>',
         to: user.email,
@@ -22,7 +22,7 @@ module.exports.sendPasswordResetEmail = (user, data, callback) => {
 };
 
 module.exports.sendUserVerificationEmail = (user, data, callback) => {
-    MailConfig.ViewOption(gmailTransport,hbs);
+    MailConfig.ViewOption(gmailTransport,hbs, 'verify-user-email.html');
     let HelperOptions = {
         from: '"Dip Wsit" <dipwsitaus@gmail.com>',
         to: user.email,

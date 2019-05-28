@@ -25,12 +25,13 @@ const handlebarOptions = {
         extName: '.hbs',
         partialsDir: 'modules/mailer/templates/',
         layoutsDir: 'modules/mailer/templates/',
-        defaultLayout: 'forgot-password-email.html',
+        // defaultLayout: 'forgot-password-email.html',
     },
     viewPath: 'modules/mailer/templates/',
     extName: '.html'
 };
 
-module.exports.ViewOption = (transport, hbs) => {
+module.exports.ViewOption = (transport, hbs, templateName) => {
+    handlebarOptions.viewEngine.defaultLayout = templateName;
     transport.use('compile', hbs(handlebarOptions));
 };

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const isUserActivated = require('../../middlewares/user-validator').isUserActivated;
 /**
  * @todo
  * load form factory
@@ -14,9 +15,9 @@ let Response = app.response;
 let ApiResponse = require('../../components/view-models').ApiResponse;
 
 /** GET AUTH TOKEN /oauth/token */
-router.all('/token', obtainToken);
-router.all('/token/refresh', obtainToken);
-router.all('/token/revoke', obtainToken);
+router.all('/token',isUserActivated, obtainToken);
+router.all('/token/refresh',isUserActivated, obtainToken);
+router.all('/token/revoke',isUserActivated, obtainToken);
 
 function obtainToken(req, res) {
 

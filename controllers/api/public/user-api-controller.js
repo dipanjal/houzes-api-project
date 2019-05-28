@@ -8,7 +8,7 @@ const router = require('express').Router();
 
 const UserDao = require('../../../db/dao/user-dao'),
     UserVerificationDao = require('../../../db/dao/user-verification-dao'),
-    validator = require('../../../middlewares/validator'),
+    validator = require('../../../middlewares/user-validator'),
     verificationTypes = require('../../../components/enums/verification-types-enum');
 
 let hashUtlis = require('../../../components/utils/hash-utils'),
@@ -21,7 +21,6 @@ let isEmailExist = validator.isEmailExist;
 let isPhoneExist = validator.isPhoneExist;
 
 router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) => {
-
     let body = req.body;
     let UserData = {
         email: body.email,
@@ -33,14 +32,14 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
     };
     UserDao.saveOAuthUser(UserData)
         .then(user => {
-            // res.json(new ApiResponse(200,'registration successful',user))
             let opt = otpUtils.generateOTP();
 
             let data = {
                 subject: 'Houzes- User Verification!!',
                 token: opt,
-                url: `http://localhost:3000/api/v1/public/reset-password/token/${opt}`
+                url: `http://localhost:3000/api/v1/public/user/verify/token/${opt}`
             };
+
             mailer.sendUserVerificationEmail(user, data,(err, mailResp) => {
                 if(err){res.status(err.code||500).json(new ApiResponse(err.code||500,err.message))}
                 else{
@@ -54,8 +53,8 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
                         res.json(new ApiResponse(200,
                             'A verification link has been send to your email, please confirm your account',
                             data));
-                    }).catch(err => {
-                        res.status(err.code).send(err);
+                        }).catch(err => {
+                            res.status(err.code).send(err);
                     });
                 }
             });
@@ -63,7 +62,7 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
 });
 
 router.get('/user/verify/token/:token', (req,res) => {
-    UserVerificationDao.validateToken(req.params.token, verificationTypes.PASSWORD_RESET)
+    UserVerificationDao.validateToken(req.params.token, verificationTypes.USER_VERIFICATION)
         .then(verificationData => {
             if (verificationData) {
                 UserDao.activeateUser(verificationData.user_id).then(userData => {

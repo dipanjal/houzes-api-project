@@ -34,7 +34,37 @@ dao.findUserByEmail = email => {
             reject(err);
         });
     });
+};
 
+dao.findUser = whereContition => {
+    console.log('findUserByEmail()');
+    return new Promise((resolve,reject)=>{
+        User.findOne({
+            where:whereContition,
+        }).then(user => {
+            resolve(user)
+        }).catch( err => {
+            console.log("findUserByEmail - Err: ", err);
+            reject(err);
+        });
+    });
+};
+
+dao.findActivatedUserByEmail = email => {
+    console.log('findUserByEmail()');
+    return new Promise((resolve,reject)=>{
+        User.findOne({
+            where:{
+                email:email,
+                status:userAccTypeEnums.ACTIVATED
+            }
+        }).then(user => {
+            resolve(user)
+        }).catch( err => {
+            console.log("findUserByEmail - Err: ", err);
+            reject(err);
+        });
+    });
 };
 
 dao.findUserByPhone = phone => {

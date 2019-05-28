@@ -1,11 +1,11 @@
+let oAuthDao = require('../db/dao/oauth-dao'),
+	UserDao = require('../db/dao/user-dao'),
+	ApiResponse = require('../components/view-models').ApiResponse,
+	UserStatusEnum = require('../components/enums/user-status-types-enum');
 
-let oAuthDao = require('../db/dao/oauth-dao');
-let UserDao = require('../db/dao/user-dao');
-let ApiResponse = require('../components/view-models').ApiResponse;
+let userValidator = function(){};
 
-let validator = function(){};
-
-validator.isUserValid = (req,res, next) => {
+userValidator.isUserValid = (req, res, next) => {
 	let body = req.body;
 	let isValid = false;
 	let message;
@@ -33,14 +33,14 @@ validator.isUserValid = (req,res, next) => {
  *	WHILE REGISTER USER
  *	CHECK IF USER ALREADY EXIST or NOT
  */
-validator.isEmailExist = (req, res, next) => {
+userValidator.isEmailExist = (req, res, next) => {
 	UserDao.findUserByEmail(req.body.email).then(user => {
 		if(user) res.status(403).json(new ApiResponse(403,'email already existed, select an unique email'));
 		else next();
 	}).catch(err => res.code(500).json(new ApiResponse(500,'ok',err)))
 };
 
-validator.isPhoneExist = (req, res, next) => {
+userValidator.isPhoneExist = (req, res, next) => {
 	UserDao.findUserByPhone(req.body.phone).then(user => {
 			if (user) res.status(403).json(new ApiResponse(403,'phone already existed, select an unique phone'));
 			else next();
@@ -48,7 +48,7 @@ validator.isPhoneExist = (req, res, next) => {
 		.catch(err=> res.code(500).json(new ApiResponse(500,'ok',err)) );
 };
 
-validator.isOAuthClientValid = (req,res, next) => {
+userValidator.isOAuthClientValid = (req, res, next) => {
 	let body = req.body;
 	let isValid = false;
 	let message;
@@ -71,7 +71,7 @@ validator.isOAuthClientValid = (req,res, next) => {
 	}
 };
 
-validator.isOAUthClientExist = (req,res, next) => {
+userValidator.isOAUthClientExist = (req, res, next) => {
 	oAuthDao.findClientByClientId( req.body.client_id,(err, oAuthClient) => {
 		if (err) {res.send(err);}
 		else if (oAuthClient){
@@ -85,10 +85,21 @@ validator.isOAUthClientExist = (req,res, next) => {
 	});
 };
 
-validator.isTempTokenExpired = (req,res,next) => {
-	let config = require('../config');
-	let tempTokenTimeTime = config.otpLifeTime;
-	console.log(tempTokenTimeTime);
+userValidator.isUserActivated = (req,res,next) => {
+	// let whereCondition = {
+	// 		email:req.body.email,
+	// 		status:UserStatusEnum.ACTIVATED
+	// };
+	UserDao.findActivatedUserByEmail(req.body.email).then( user => {
+		if(user) next();
+		else res.status(401).json(new ApiResponse(401,'please verify you account'));
+	}).catch(err => res.status(err.code||500).json(new ApiResponse(err.code||500,err.message,err)));
 };
 
-module.exports = validator;
+// userValidator.isTempTokenExpired = (req, res, next) => {
+// 	let config = require('../config');
+// 	let tempTokenTimeTime = config.otpLifeTime;
+// 	console.log(tempTokenTimeTime);
+// };
+
+module.exports = userValidator;
