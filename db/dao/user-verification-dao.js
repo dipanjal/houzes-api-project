@@ -16,6 +16,7 @@ VerificationCodeDao.save = (VerificationCodeData) => {
     });
 };
 
+
 VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
     return new Promise( (resolve,reject) => {
         console.log('mark as used');
@@ -41,7 +42,7 @@ VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
 };
 
 
-VerificationCodeDao.validateToken = (code, type) => {
+VerificationCodeDao.checkToken = (code, type) => {
     return new Promise((resolve,reject) => {
         UserVerificationModel.findOne({
             where:{
@@ -54,24 +55,16 @@ VerificationCodeDao.validateToken = (code, type) => {
                 model:UserModel,
                 attributes: ['id', 'email', 'first_name', 'last_name']
             }]
-        }).then(verificationCode => {
-            if (verificationCode){
-                // VerificationCodeDao.markAsUsed(verificationCode)
-                //     .then(data => {
-                //         console.log('data received');
-                //         resolve(data);
-                //     })
-                //     .catch(err=>reject(err));
-                /**
-                 * update the verification code
-                 */
-                return verificationCode.update({is_used: true},{where: verificationCode.id});
-            }else{
-                resolve(verificationCode);
-            }
-        }).then(updated => {
-            // console.log('verification code updated!!');
-            resolve(updated);
+        }).then(data => {
+            resolve(data);
+            // if (verificationCode){
+            //     /**
+            //      * update the verification code
+            //      */
+            //     return verificationCode.update({is_used: true},{where: verificationCode.id});
+            // }else{
+            //     resolve(verificationCode);
+            // }
         }).catch(err => reject(err));
     });
 };

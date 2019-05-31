@@ -64,7 +64,7 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
 });
 
 router.get('/user/verify/token/:token', (req,res) => {
-    UserVerificationDao.validateToken(req.params.token, verificationTypes.USER_VERIFICATION)
+    UserVerificationDao.checkToken(req.params.token, verificationTypes.USER_VERIFICATION)
         .then(verificationData => {
             if (verificationData) {
                 UserDao.activeateUser(verificationData.user_id).then(userData => {
@@ -81,8 +81,31 @@ router.get('/user/verify/token/:token', (req,res) => {
 });
 
 
+/**
+ * RESET PASSWORD CONFIRMED
+ * Need to work with angular project
+ * web project will call the api not requested from emails
+ * @token
+ */
+router.get('/user/reset-password/token/:token', (req,res) => {
 
+    UserVerificationDao.checkToken(req.params.token, verificationTypes.PASSWORD_RESET)
+        .then(verificationData => {
+            if (verificationData) {
+                res.status(200).json(new ApiResponse(200,"ok",verificationTypes.PASSWORD_RESET))
+                // res.sendFile(__dirname+'/modules/live_tracking/client.html');
+            }
+            else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
+        }).catch(err => {
+        let errCode = err.code || 500;
+        res.status(errCode).json(new ApiResponse(errCode,err.message))
+    });
+});
 
+/**
+ * RESET PASSWORD REQUEST
+ * @email
+ */
 router.post('/user/request-password-reset', (req, res) => {
     UserDao.findUserByEmail(req.body.email).then(user => {
         if(user){
@@ -124,14 +147,13 @@ router.post('/user/request-password-reset', (req, res) => {
     });
 });
 
-router.get('/user/reset-password/token/:token', (req,res) => {
-    UserVerificationDao.validateToken(req.params.token).then(data => {
-        if (data) res.json(new ApiResponse(200,'user verified! ',data));
-        else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
-    }).catch(err => {
-        let errCode = err.code || 500;
-        res.status(errCode).json(new ApiResponse(errCode,err.message))
-    });
+router.post('/user/submitNewPassword', (req,res) => {
+    let body = req.body;
+    let token = body.token;
+    let newPass = body.new_password;
+    if(newPass === body.confirm_password){
+        //@TODO
+    }
 });
 
 module.exports = router;
