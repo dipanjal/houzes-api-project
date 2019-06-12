@@ -30,7 +30,7 @@ server.listen(port, () => {
 /**
  * calling socket
  */
-// let liveTracking = require('./modules/live_tracking')(io);
+let liveTracking = require('./modules/live_tracking')(io);
 
 
 /**

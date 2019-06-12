@@ -10,8 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font: 13px Helvetica, Arial; }
         form {padding: 3px; position: fixed; bottom: 0; width: 100%; }
-        /* form input { border: 1; padding: 10px; width: 90%; margin-right: .5%; } */
-        /* form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; } */
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
         #messages li:nth-child(odd) { background: #eee; }
@@ -30,18 +28,22 @@
     </div>
 </form>
 
-<!--<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
 <script>
     $(function () {
-        var socket = io();
-        nickName = 'anonymous';
+        let socket = io();
+        // let nickName = 'anonymous';
 
         $("#m").on('keypress', (event) => {
             if (event.which == 13){
                 console.log(event);
-                msg = $('#m').val();
-                socket.emit('chat message', msg);
+                // msg = $('#m').val();
+                let data = {
+                    username:$('#nick-name').val(),
+                    message:$('#m').val()
+                };
+                socket.emit('chat message', data);
                 $('#m').val('');
             }
         });

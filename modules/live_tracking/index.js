@@ -7,9 +7,17 @@ module.exports = (io) => {
 
     let context = {};
     context.username = 'user1';
+
     io.on('connection', function(socket){
-        socket.on('chat message', function(msg){
-            io.emit('chat message', msg);
+
+        // socket.on('chat message', function(msg){
+        //     io.emit('chat message', msg);
+        // });
+
+        socket.on('chat message', data => {
+            let userName = data.username;
+            let message = data.message;
+            io.emit('chat message', userName+': '+message);
         });
 
         socket.on('authenticate user', (data) => {
