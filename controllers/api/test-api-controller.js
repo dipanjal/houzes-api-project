@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const authenticator = require('../../modules/oauth/middleware/authenticator');
+const authenticator = require('../../modules/oauth/middleware/authenticator').authenticateRequest;
 const ApiResponse = require('../../components').viewModels.ApiResponse;
 
 router.get('/',authenticator,(req,res)=>{

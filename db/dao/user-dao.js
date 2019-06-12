@@ -1,5 +1,6 @@
 let User = require('../../modules/oauth/sequlizer_models').User;
 let hashUtlis = require('../../components/utils/hash-utils');
+const userAccTypeEnums = require('../../components/enums/user-status-types-enum');
 
 let dao = function(){};
 /**
@@ -13,8 +14,6 @@ dao.findAllUsers = () => {
             attributes: ['email','phone','first_name','last_name','status']
         }).then(users => {
             resolve(users);
-            // if(users) resolve(users);
-            // else reject('no user found');
         }).catch( err => {
             console.log("findAllUsers - Err: ", err);
             reject(err)
@@ -35,7 +34,37 @@ dao.findUserByEmail = email => {
             reject(err);
         });
     });
+};
 
+dao.findUser = whereContition => {
+    console.log('findUserByEmail()');
+    return new Promise((resolve,reject)=>{
+        User.findOne({
+            where:whereContition,
+        }).then(user => {
+            resolve(user)
+        }).catch( err => {
+            console.log("findUserByEmail - Err: ", err);
+            reject(err);
+        });
+    });
+};
+
+dao.findActivatedUserByEmail = email => {
+    console.log('findUserByEmail()');
+    return new Promise((resolve,reject)=>{
+        User.findOne({
+            where:{
+                email:email,
+                status:userAccTypeEnums.ACTIVATED
+            }
+        }).then(user => {
+            resolve(user)
+        }).catch( err => {
+            console.log("findUserByEmail - Err: ", err);
+            reject(err);
+        });
+    });
 };
 
 dao.findUserByPhone = phone => {
@@ -87,6 +116,42 @@ dao.saveOAuthUser = (UserData) => {
         }).catch(err => {
             reject(err);
         });
+    });
+};
+
+dao.saveOrUpdate = (UserData) => {
+    return new Promise((resolve, reject) => {
+        User.findOne({
+            where:{email:UserData.email},
+        }).then(user => {
+            if(user){
+                resolve('update');
+            }else{
+                resolve('create new');
+            }
+        }).catch(err => reject(err));
+    });
+};
+
+dao.activeateUser = (user_id) => {
+    return new Promise((resolve, reject) => {
+        User.update(
+            {status:userAccTypeEnums.ACTIVATED},
+            {
+                where:
+                    {
+                        id:user_id,
+                        status:userAccTypeEnums.PENDING
+                    }
+            }
+        ).then(([affectedCount,affectedRows]) => {
+            // resolve(count);
+            resolve({
+                count: affectedCount,
+                is_updated: affectedCount > 0 ? true:false
+            });
+            // resolve([affectedCount,affectedRows])
+        }).catch( err => reject(err));
     });
 };
 

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 let ApiResponse = require('../../../components/view-models').ApiResponse;
-const isOAUthClientExist = require('../../../middlewares/validator').isOAUthClientExist;
+const isOAUthClientExist = require('../../../middlewares/user-validator').isOAUthClientExist;
 const oAuthDao = require('../../../db/dao/oauth-dao');
 
 /**

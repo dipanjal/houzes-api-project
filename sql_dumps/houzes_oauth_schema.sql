@@ -100,4 +100,20 @@ CREATE TABLE "public"."oauth_users" (
 ) WITH (oids = false);
 
 
+create table verification_codes
+(
+	id serial not null
+		constraint verification_codes_pk
+			primary key,
+	code text,
+	user_email text not null,
+	expired_at timestamp,
+	is_used boolean default false,
+	verification_type text,
+	"createdAt" timestamp,
+	"updatedAt" timestamp
+);
+
+
+
 -- 2019-05-17 12:14:40.056065+06
