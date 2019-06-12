@@ -152,7 +152,7 @@ router.post('/user/submitNewPassword', (req,res) => {
     let token = body.token;
     let newPass = body.new_password;
     if(newPass === body.confirm_password){
-        //@TODO
+        //@TODO update user password
     }
 });
 

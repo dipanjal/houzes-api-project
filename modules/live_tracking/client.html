@@ -26,47 +26,100 @@
         <!-- <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd"> -->
         <input type="text" class="form-control" id="m" autocomplete="off" placeholder="type message here...."/>
     </div>
+    <div class="form-group col-md-12">
+        <!-- <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd"> -->
+        <input type="button" value="Leave" class="form-control btn btn-danger" id="leave-room"/>
+    </div>
 </form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
 <script>
     $(function () {
+
+
         let socket = io();
-        // let nickName = 'anonymous';
+        socket.on('connect',function(event){
+            console.log('connected');
+            // socket.emit('authenticate user', {username:'user1'});
+            // socket.emit('new user', 'new user connected');
+        });
+
+        let roomName = '';
+        let isUserConnected = false;
 
         $("#m").on('keypress', (event) => {
             if (event.which == 13){
-                console.log(event);
-                // msg = $('#m').val();
                 let data = {
+                    roomName : 'test-room',
                     username:$('#nick-name').val(),
                     message:$('#m').val()
                 };
-                socket.emit('chat message', data);
+                console.log(isUserConnected);
+                /**
+                 * JOIN IN ROOM
+                 * */
+                if(!isUserConnected){
+                    socket.emit('join request',data);
+                }
+
+                // socket.emit('chat message', data);
+                /**
+                 * SEND A MESSAGE TO ROOM
+                 * */
+                socket.emit('room chatting', data);
                 $('#m').val('');
             }
         });
 
-        socket.on('connect',function(event){
-            console.log('connected');
-            socket.emit('authenticate user', {username:'user1'});
+        /**
+         * NEW USER JOINED IN ROOM
+         * */
+        socket.on('new user', data => {
+            console.log("joined");
+
+            // roomName = data.roomName;
+            // isUserConnected = true;
+            // console.log(data.username+'has joined in '+data.roomName);
         });
-        //
-        socket.on('chat message', function(msg){
+
+        /**
+         * RECEIVE EMITTED MESSAGE BY SOCKET
+         * */
+        socket.on('room message', data => {
+            msg  = data.username+': '+data.message;
             $('#messages').append($('<li>').text(msg));
             window.scrollTo(0, document.body.scrollHeight);
         });
-        socket.on('authenticated', function(msg){
-            console.log(msg);
-            // $('#messages').append($('<li>').text(msg));
-            // window.scrollTo(0, document.body.scrollHeight);
+
+        /**
+         * Leave The Room
+         */
+        $('#leave-room').on('click', function(event){
+            socket.emit('leave request', {
+                roomName:roomName,
+                username: $('#nick-name').val(),
+            });
         });
-        socket.on('unauthenticated', function(msg){
-            console.log(msg);
-            // $('#messages').append($('<li>').text(msg));
-            // window.scrollTo(0, document.body.scrollHeight);
+        socket.on('left user', data => {
+            roomName = data.roomName;
+            isUserConnected = false;
+            console.log(data.username+'has left '+data.roomName);
         });
+
+        // socket.on('chat message', function(msg){
+        //     $('#messages').append($('<li>').text(msg));
+        //     window.scrollTo(0, document.body.scrollHeight);
+        // });
+        // socket.on('authenticated', function(msg){
+        //     console.log(msg);
+        // });
+        // socket.on('unauthenticated', function(msg){
+        //     console.log(msg);
+        // });
+        // socket.on('user left',username => {
+        //     console.log(username+" has left");
+        // });
 
     });
 </script>
