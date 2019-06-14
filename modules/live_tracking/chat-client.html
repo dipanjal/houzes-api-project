@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-    <title>Socket.IO chat example</title>
+    <title>Chat Room Test</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font: 13px Helvetica, Arial; }
@@ -36,7 +36,6 @@
 
 <script>
     $(function () {
-
 
         let socket = io();
         socket.on('connect',function(event){
@@ -105,7 +104,7 @@
          * Leave The Room
          */
         $('#leave-room').on('click', event => {
-            console.log(event);
+            // console.log(event);
             if(isUserConnected){
                 // isUserConnected=false;
                 socket.emit('leave request', {
