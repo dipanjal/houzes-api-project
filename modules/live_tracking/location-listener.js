@@ -1,14 +1,4 @@
-/**
- * passing server instance from app.js to live_tracking module
- * @param server
- */
-
 module.exports = (io) => {
-
-    let context = {};
-    context.username = 'user1';
-
-    let rooms={};
 
     io.on('connection', function(socket){
 
@@ -50,38 +40,5 @@ module.exports = (io) => {
         //     }
         //
         // });
-
-
-
-        socket.on('join request', data => {
-            // let roomName = data.roomName;
-
-            // if(rooms[roomName]){
-            //     rooms[roomName].push(socket);
-            // }else{
-            //     rooms[roomName] = [socket];
-            // }
-
-            socket.join(data.roomName);
-            io.to(socket.id).emit('me joined', data);
-            socket.broadcast.to(data.roomName).emit('new user',data);
-
-            // io.to(roomName).emit('new user',{
-            //     roomName:roomName,
-            //     username:data.username
-            // });
-
-        });
-
-        socket.on('room chatting', data=> {
-            io.to(data.roomName).emit('room message',data);
-        });
-
-        socket.on('leave request', data => {
-            // socket.leave(data.roomName);
-            io.to(socket.id).emit('me left',data);
-            socket.broadcast.to(data.roomName).emit('left user',data);
-        });
-
     });
 };
