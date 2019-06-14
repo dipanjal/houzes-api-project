@@ -11,8 +11,22 @@ UserLocation.init({
             unique: true,
         },
         user_id: Sequelize.INTEGER,
-        latitude: Sequelize.DOUBLE,
-        longitude: Sequelize.DOUBLE,
+        latitude: {
+            type:Sequelize.DOUBLE,
+            validate:{
+                isDecimal:{
+                    msg:"Invalid Latitude"
+                }
+            }
+        },
+        longitude: {
+            type:Sequelize.DOUBLE,
+            validate:{
+                isDecimal:{
+                    msg:"Invalid Longitude"
+                }
+            }
+        },
         is_driving: Sequelize.BOOLEAN,
         createdAt: Sequelize.TIME,
         updatedAt: Sequelize.TIME

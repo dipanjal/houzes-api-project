@@ -1,17 +1,17 @@
-const UserLocationDao = require('../../../db/dao/user-location-dao');
+const UserLocationDao = require('../../db/dao/user-location-dao');
 
 module.exports = (io) => {
 
     io.on('connection', function(socket){
 
-        socket.on('update location', data => {
+        socket.on('walking::update_location', data => {
             UserLocationDao.saveOrUpdate(data).then(userLocation=>{
-                // res.json(new ApiResponse(200,'ok',userLocation));
+                io.emit('walking::location_update', userLocation);
             }).catch( err => {
-                data = err;
-                // res.status(500).send(err.message);
+                io.to(socket.id).emit('walking::location_update_err', err.message);
             });
-            io.emit('location updated', data);
+            // io.to(socket.id).emit('walking::location_update', data);
+
         });
 
         // socket.on('chat message', data => {

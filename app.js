@@ -38,6 +38,8 @@ app.get('/',function(req, res){
 	res.sendFile(__dirname+'/modules/live_tracking/chat-client.html');
 });
 
+
+require('./modules/live_tracking/location-listener')(io);
 app.get('/location',function(req, res){
 	res.sendFile(__dirname+'/modules/live_tracking/location.html');
 });
