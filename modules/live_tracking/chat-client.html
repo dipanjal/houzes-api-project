@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <title>Chat Room Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form {padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+        #messages { margin-bottom: 40px }
+    </style>
+</head>
+<body>
+<ul id="messages"></ul>
+<form class="form">
+    <div class="form-group col-sm-2">
+        <input type="text" class="form-control" id="nick-name" placeholder="your nickname"/>
+    </div>
+    <div class="form-group col-sm-10">
+        <!-- <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd"> -->
+        <input type="text" class="form-control" id="m" autocomplete="off" placeholder="type message here...."/>
+    </div>
+    <div class="form-group col-md-12">
+        <!-- <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd"> -->
+        <input type="button" value="Leave" class="form-control btn btn-danger" id="leave-room"/>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+<script>
+    $(function () {
+
+        let socket = io();
+        socket.on('connect',function(event){
+            console.log('connected');
+            // socket.emit('authenticate user', {username:'user1'});
+            // socket.emit('new user', 'new user connected');
+        });
+
+        let roomName = '';
+        let isUserConnected = false;
+
+        $("#m").on('keypress', (event) => {
+            if (event.which == 13){
+                let data = {
+                    roomName : 'test-room',
+                    username:$('#nick-name').val(),
+                    message:$('#m').val()
+                };
+                console.log(isUserConnected);
+
+                /**
+                 * JOIN IN ROOM
+                 * */
+                if(!isUserConnected){
+                    socket.emit('join request',data);
+                }
+                /**
+                 * SEND A MESSAGE TO ROOM
+                 * */
+                socket.emit('room chatting', data);
+                $('#m').val('');
+            }
+        });
+
+        /**
+         * NOTIFY USERS THAT A NEW USER JOINED
+         * EXCEPT ME
+         * */
+        socket.on('new user', data => {
+            // isUserConnected = true;
+            roomName = data.roomName;
+            console.log(data.username+' has joined in '+data.roomName);
+        });
+
+        /**
+         * NOTIFY ME USER THAT I HAVE JOINED
+         * */
+        socket.on('me joined', data => {
+            // console.log(data);
+            isUserConnected = true;
+            roomName = data.roomName;
+            console.log('You Have Joined in '+data.roomName);
+        });
+
+        /**
+         * RECEIVE EMITTED MESSAGE BY SOCKET
+         * */
+        socket.on('room message', data => {
+            // console.log(data);
+            let msg  = data.username+': '+data.message;
+            $('#messages').append($('<li>').text(msg));
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        /**
+         * Leave The Room
+         */
+        $('#leave-room').on('click', event => {
+            // console.log(event);
+            if(isUserConnected){
+                // isUserConnected=false;
+                socket.emit('leave request', {
+                    roomName:roomName,
+                    username: $('#nick-name').val()
+                });
+            }else{
+                alert("you are not joined yet");
+            }
+
+        });
+
+        /**
+         * even for all except the user has left
+         */
+        socket.on('left user', data => {
+            roomName = data.roomName;
+            // isUserConnected = false;
+            console.log(data.username+' has left '+data.roomName);
+        });
+
+        socket.on('me left', data => {
+            roomName = data.roomName;
+            isUserConnected = false;
+            console.log('You Have Left '+data.roomName);
+        });
+
+        // socket.on('chat message', function(msg){
+        //     $('#messages').append($('<li>').text(msg));
+        //     window.scrollTo(0, document.body.scrollHeight);
+        // });
+        // socket.on('authenticated', function(msg){
+        //     console.log(msg);
+        // });
+        // socket.on('unauthenticated', function(msg){
+        //     console.log(msg);
+        // });
+        // socket.on('user left',username => {
+        //     console.log(username+" has left");
+        // });
+
+    });
+</script>
+</body>
+</html>

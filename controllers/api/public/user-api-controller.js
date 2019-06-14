@@ -93,7 +93,7 @@ router.get('/user/reset-password/token/:token', (req,res) => {
         .then(verificationData => {
             if (verificationData) {
                 res.status(200).json(new ApiResponse(200,"ok",verificationTypes.PASSWORD_RESET))
-                // res.sendFile(__dirname+'/modules/live_tracking/client.html');
+                // res.sendFile(__dirname+'/modules/live_tracking/chat-client.html');
             }
             else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
         }).catch(err => {
@@ -152,7 +152,7 @@ router.post('/user/submitNewPassword', (req,res) => {
     let token = body.token;
     let newPass = body.new_password;
     if(newPass === body.confirm_password){
-        //@TODO
+        //@TODO update user password
     }
 });
 
