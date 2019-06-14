@@ -1,4 +1,4 @@
-sequelize = require('../connectors/seq-pg-connector');
+// let sequelize = require('../connectors/seq-pg-connector');
 
 /**
  * Sequelize Models or Entities
@@ -6,7 +6,7 @@ sequelize = require('../connectors/seq-pg-connector');
  * All of these models are associated with oAuth
  */
 
-let sequelizeModels = require('../../modules/oauth/sequlizer_models');
+let sequelizeModels = require('../../modules/oauth/auth_models');
 
 let User = sequelizeModels.User,
     OAuthAccessToken = sequelizeModels.OAuthAccessToken,

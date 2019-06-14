@@ -1,4 +1,4 @@
-let User = require('../../modules/oauth/sequlizer_models').User;
+let User = require('../../modules/oauth/auth_models').User;
 let hashUtlis = require('../../components/utils/hash-utils');
 const userAccTypeEnums = require('../../components/enums/user-status-types-enum');
 

@@ -2,7 +2,7 @@ let _ = require('lodash');
 
 /** @todo load from factory */
 
-let sequelizeModels = require('./sequlizer_models');
+let sequelizeModels = require('./auth_models');
 let hashUtlis = require('../../components/utils/hash-utils');
 
 

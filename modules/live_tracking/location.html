@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Location Client</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+</head>
+
+<body>
+<div class="footer navbar-fixed-bottom row">
+    <div class="form-group col-md-2">
+        <input type="number" class="form-control" id="user-id" value="8"/>
+    </div>
+    <div class="form-group col-md-5">
+        <input type="text" class="form-control" id="lat" autocomplete="on" placeholder="Latitude"/>
+    </div>
+    <div class="form-group col-md-5">
+        <input type="text" class="form-control" id="lon" autocomplete="on" placeholder="Longitude"/>
+    </div>
+    <div class="form-group col-md-12">
+        <input type="button" value="Emit" class="form-control btn btn-danger" id="leave-room"/>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+
+    });
+</script>
+</body>
+</html>

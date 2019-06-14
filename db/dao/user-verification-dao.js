@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 let sequelize = require('../connectors/seq-pg-connector'),
     UserVerificationModel = require('../models').UserVerificationModel,
-    UserModel = require('../../modules/oauth/sequlizer_models').User;
+    UserModel = require('../../modules/oauth/auth_models').User;
 
 VerificationCodeDao = function () {};
 

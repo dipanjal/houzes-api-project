@@ -1,10 +1,18 @@
+const UserLocationDao = require('../../../db/dao/user-location-dao');
+
 module.exports = (io) => {
 
     io.on('connection', function(socket){
 
-        // socket.on('chat message', function(msg){
-        //     io.emit('chat message', msg);
-        // });
+        socket.on('update location', data => {
+            UserLocationDao.saveOrUpdate(data).then(userLocation=>{
+                // res.json(new ApiResponse(200,'ok',userLocation));
+            }).catch( err => {
+                data = err;
+                // res.status(500).send(err.message);
+            });
+            io.emit('location updated', data);
+        });
 
         // socket.on('chat message', data => {
         //     let userName = data.username;
