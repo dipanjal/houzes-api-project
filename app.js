@@ -25,21 +25,21 @@ server.listen(port, () => {
 });
 
 
-/**
- * calling socket chatroom
- */
-require('./modules/live_tracking/chatting')(io);
+// /**
+//  * calling socket chatroom
+//  */
+// require('./modules/live_tracking/chatting')(io);
+//
+// /**
+//  * serving html file
+//  * A Client for realtime chatting
+//  */
+// app.get('/',function(req, res){
+// 	res.sendFile(__dirname+'/modules/live_tracking/chat-client.html');
+// });
 
-/**
- * serving html file
- * A Client for realtime chatting
- */
-app.get('/',function(req, res){
-	res.sendFile(__dirname+'/modules/live_tracking/chat-client.html');
-});
-
-
-require('./modules/live_tracking/location-listener')(io);
+require('./modules/live_tracking/sockets/location-listener')(io);
+let socket_static_client_path = '/modules/live_tracking/clients';
 app.get('/location',function(req, res){
-	res.sendFile(__dirname+'/modules/live_tracking/location.html');
+	res.sendFile(__dirname+socket_static_client_path+'/location.html');
 });

@@ -28,7 +28,7 @@
 
 <script>
     $(function () {
-        let socket = io();
+        let socket = io('localhost:3000',{ query: "token=31fc6dd960858f3a0908d21da97aede114449c76" });
 
         $('#emit-location').on('click',event=>{
             // console.log(event);
@@ -46,6 +46,16 @@
 
         socket.on('walking::location_update_err', err => {
             console.log(err);
+        });
+
+        socket.on('error', err=>{
+            console.log(err);
+        });
+
+        socket.on('connect', msg => {
+            console.log('connected');
+            // socket.emit('authenticate user', {username:'user1'});
+            // socket.emit('new user', 'new user connected');
         });
     });
 </script>

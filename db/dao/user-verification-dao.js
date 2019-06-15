@@ -49,7 +49,7 @@ VerificationCodeDao.checkToken = (code, type) => {
                 code:code,
                 is_used:false,
                 verification_type: type,
-                // expires_at: {[Sequelize.Op.gte]:new Date()}
+                expires_at: {[Sequelize.Op.gte]:new Date()}
             },
             include: [{
                 model:UserModel,

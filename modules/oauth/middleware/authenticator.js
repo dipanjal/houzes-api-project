@@ -1,7 +1,4 @@
-/**
- * @todo
- * load from factory
- */
+
 const app = require('../app');
 let oauth = app.oauth,
 	Request = app.request,
@@ -27,3 +24,5 @@ module.exports.authenticateRequest = function (req, res, next) {
 			res.status(err.code || 500).json(err);
 		});
 };
+
+

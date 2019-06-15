@@ -1,8 +1,8 @@
-const UserLocationDao = require('../../db/dao/user-location-dao');
-
+const UserLocationDao = require('../../../db/dao/user-location-dao');
+const authenticator = require('../middlewares/socket-authenticator').authenticateSocket;
 module.exports = (io) => {
 
-    io.on('connection', function(socket){
+    io.use(authenticator).on('connection', function(socket){
 
         socket.on('walking::update_location', data => {
             UserLocationDao.saveOrUpdate(data).then(userLocation=>{
