@@ -52,9 +52,13 @@ router.post('/user/register', isUserValid,isEmailExist,isPhoneExist,(req, res) =
                         verification_type:verificationTypes.USER_VERIFICATION
                     };
                     UserVerificationDao.save(otpData).then(data => {
+                        let respData = {
+                            user_id:data.user_id,
+                            verification_type:data.verification_type,
+                            expires_at:data.expires_at
+                        };
                         res.json(new ApiResponse(200,
-                            'A verification link has been send to your email, please confirm your account',
-                            data));
+                            'A verification link has been send to your email, please confirm your account',respData));
                         }).catch(err => {
                             res.status(err.code).send(err);
                     });
@@ -67,13 +71,15 @@ router.get('/user/verify/token/:token', (req,res) => {
     UserVerificationDao.checkToken(req.params.token, verificationTypes.USER_VERIFICATION)
         .then(verificationData => {
             if (verificationData) {
-                UserDao.activeateUser(verificationData.user_id).then(userData => {
-                    res.json(new ApiResponse(200,'User Activated',userData));
-                }).catch( err => {
-                    res.send(err)
-                });
+                return UserDao.activeateUser(verificationData.user_id);
             }
-            else res.status(401).json(new ApiResponse(401,'token invalidate or expired!'));
+            else {
+                let err = new Error('token invalidate or expired!');
+                err.code = 401;
+                throw err;
+            }
+        }).then(userData => {
+            res.json(new ApiResponse(200,'User Activated',userData));
         }).catch(err => {
             let errCode = err.code || 500;
             res.status(errCode).json(new ApiResponse(errCode,err.message))

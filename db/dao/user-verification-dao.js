@@ -55,22 +55,20 @@ VerificationCodeDao.checkToken = (code, type) => {
                 model:UserModel,
                 attributes: ['id', 'email', 'first_name', 'last_name']
             }]
-        }).then(data => {
-            resolve(data);
-            // if (verificationCode){
-            //     /**
-            //      * update the verification code
-            //      */
-            //     return verificationCode.update({is_used: true},{where: verificationCode.id});
-            // }else{
-            //     resolve(verificationCode);
-            // }
+        }).then(verificationCode => {
+            // resolve(data);
+            if (verificationCode){
+                /**
+                 * update the verification code status
+                 */
+                return verificationCode.update({is_used: true},{where: verificationCode.id});
+            }else{
+                resolve(verificationCode);
+            }
+        }).then(verificationCode=>{
+            resolve(verificationCode)
         }).catch(err => reject(err));
     });
-};
-
-UserVerificationModel.invalidateTokens = () => {
-
 };
 
 module.exports = VerificationCodeDao;

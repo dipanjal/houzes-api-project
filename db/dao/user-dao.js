@@ -134,6 +134,7 @@ dao.saveOrUpdate = (UserData) => {
 };
 
 dao.activeateUser = (user_id) => {
+    console.log('activateUser()');
     return new Promise((resolve, reject) => {
         User.update(
             {status:userAccTypeEnums.ACTIVATED},

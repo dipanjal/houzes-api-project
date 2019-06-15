@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const OAuthAccessTokenModel = require('../models').OAuthAccessTokenModel,
     OAuthClientModel = require('../models').OAuthClientModel,
     UserModel = require('../models').UserModel;
