@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
 </head>
 
 <body>
@@ -14,28 +14,30 @@
     <div class="form-group col-md-2">
         <input type="number" class="form-control" id="user-id" value="8"/>
     </div>
-    <div class="form-group col-md-5">
-        <input type="text" class="form-control" id="lat" autocomplete="on" placeholder="Latitude"/>
+    <div class="form-group col-md-8">
+        <input type="text" class="form-control" id="lat-lon" autocomplete="on" placeholder="Latitude,Longitude"/>
     </div>
-    <div class="form-group col-md-5">
-        <input type="text" class="form-control" id="lon" autocomplete="on" placeholder="Longitude"/>
-    </div>
+<!--    <div class="form-group col-md-5">-->
+<!--        <input type="text" class="form-control" id="lon" autocomplete="on" placeholder="Longitude"/>-->
+<!--    </div>-->
     <div class="form-group col-md-12">
         <input type="button" value="Emit" class="form-control btn btn-danger" id="emit-location"/>
     </div>
 </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
     $(function () {
         let socket = io('localhost:3000',{ query: "token=31fc6dd960858f3a0908d21da97aede114449c76" });
 
         $('#emit-location').on('click',event=>{
             // console.log(event);
+            let latLon = $('#lat-lon').val().split(',');
+            // console.log(latLon);
             let data = {
                 user_id:$('#user-id').val(),
-                latitude:$('#lat').val(),
-                longitude:$('#lon').val()
+                latitude:latLon[0].trim(),
+                longitude:latLon[1].trim()
             };
             socket.emit('walking::update_location',data);
         });
@@ -49,7 +51,7 @@
         });
 
         socket.on('error', err=>{
-            console.log(err);
+            console.log('Err: '+err);
         });
 
         socket.on('connect', msg => {

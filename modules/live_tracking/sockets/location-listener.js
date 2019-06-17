@@ -1,17 +1,33 @@
 const UserLocationDao = require('../../../db/dao/user-location-dao');
 const authenticator = require('../middlewares/socket-authenticator').authenticateSocket;
+const validateUserLocation = require('../schemas/UserLocationSchema').validateUserLocation;
+
 module.exports = (io) => {
 
+    /**
+     * Authenticate socket connection by token
+     * before create connection
+     * from this token you will get current user
+     */
     io.use(authenticator).on('connection', function(socket){
+        /**
+         * Before production deployment
+         * user currentUser to get user_id
+         * don't receive user_id from client
+         */
+        // let currentUser = socket.access_token.user;
 
         socket.on('walking::update_location', data => {
-            UserLocationDao.saveOrUpdate(data).then(userLocation=>{
+            /**
+             * set currentUser's id in data
+             */
+            // data.user_id = currentUser.id;
+
+            UserLocationDao.saveOrUpdate(data).then(userLocation => {
                 io.emit('walking::location_update', userLocation);
-            }).catch( err => {
+            }).catch(err => {
                 io.to(socket.id).emit('walking::location_update_err', err.message);
             });
-            // io.to(socket.id).emit('walking::location_update', data);
-
         });
 
         // socket.on('chat message', data => {

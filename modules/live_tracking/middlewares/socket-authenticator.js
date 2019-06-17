@@ -22,7 +22,10 @@ module.exports.authenticateSocket = function (socket, next) {
                 }
             ]
         }).then( accessToken => {
-            if(accessToken) next();
+            if(accessToken) {
+                socket.access_token = accessToken;
+                next();
+            }
             else next(new Error('unauthorized'));
         }).catch(err => next(err));
 

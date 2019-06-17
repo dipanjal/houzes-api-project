@@ -37,8 +37,6 @@ VerificationCodeDao.markAsUsed = (verificationCodeModel) => {
         // }
 
     });
-
-
 };
 
 
