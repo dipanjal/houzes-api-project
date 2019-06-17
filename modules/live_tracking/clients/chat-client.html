@@ -60,6 +60,7 @@
                  * JOIN IN ROOM
                  * */
                 if(!isUserConnected){
+                    console.log('join req');
                     socket.emit('join request',data);
                 }
                 /**

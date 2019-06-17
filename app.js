@@ -28,14 +28,14 @@ server.listen(port, () => {
 // /**
 //  * calling socket chatroom
 //  */
-// require('./modules/live_tracking/chatting')(io);
+// require('./modules/live_tracking/sockets/chatting')(io);
 //
 // /**
 //  * serving html file
 //  * A Client for realtime chatting
 //  */
 // app.get('/',function(req, res){
-// 	res.sendFile(__dirname+'/modules/live_tracking/chat-client.html');
+// 	res.sendFile(__dirname+'/modules/live_tracking/clients/chat-client.html');
 // });
 
 require('./modules/live_tracking/sockets/location-listener')(io);
