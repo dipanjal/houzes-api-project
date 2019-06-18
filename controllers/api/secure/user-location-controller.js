@@ -19,14 +19,22 @@ router.put('/user-location',authenticator,(req,res)=>{
         longitude: requestBody.longitude,
         is_driving:requestBody.is_driving?requestBody.is_driving:false
     };
-
     UserLocationDao.saveOrUpdate(data).then(userLocation=>{
         res.json(new ApiResponse(200,'ok',userLocation));
     }).catch( err => {
         res.status(500).send(err.message);
     });
-
-
 });
+
+router.post('/user-nearby',authenticator,(req,res)=> {
+    UserLocationDao.getNearbyUsersByRadius(req.body.latitude,req.body.longitude,req.body.radius)
+        .then(locations => {
+            res.json(new ApiResponse(200,'ok',locations));
+        }).catch(err => {
+            res.status(err.code||500).json(err.message);
+        });
+});
+
+
 
 module.exports = router;

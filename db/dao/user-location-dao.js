@@ -1,3 +1,4 @@
+const sequelize = require('../connectors/seq-pg-connector');
 let UserLocationModel = require('../../db/models').UserLocationModel;
 let UserLocationDao = function () {};
 
@@ -20,6 +21,24 @@ UserLocationDao.saveOrUpdate = (UserLocationData) => {
         }).then( obj => {
             resolve(obj)
         }).catch(err => reject(err));
+    });
+};
+
+
+UserLocationDao.getNearbyUsersByRadius = (latitude,longitude,radius) => {
+    return new Promise((resolve,reject) => {
+
+        let queryString = 'SELECT * FROM user_locations ' +
+            'WHERE ST_Distance_Sphere(ST_MakePoint(latitude,longitude), ' +
+            'ST_MakePoint('+latitude+','+longitude+')) <= '+radius;
+
+        sequelize.query(queryString,{
+                model: UserLocationModel,
+                mapToModel: true // pass true here if you have any mapped fields
+            })
+            .then(userLocations => {
+                resolve(userLocations);
+            }).catch(err=>reject(err));
     });
 };
 
