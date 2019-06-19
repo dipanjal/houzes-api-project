@@ -21,8 +21,8 @@
       "description": "Operations with Authentications"
     },
     {
-      "name": "Test",
-      "description": "For Testing Purposes"
+      "name": "Location",
+      "description": "User Location APIs"
     }
   ],
   "schemes": ["http"],
@@ -233,12 +233,12 @@
         }
       }
     },
-    "/api/v1/test/allUsers": {
-      "get": {
-        "tags": ["Test"],
-        "summary": "Show All Tokens",
-        "description": "Get All Access Tokens",
-        "operationId": "getAllToken",
+    "/api/v1/location/update": {
+      "put": {
+        "tags": ["Location"],
+        "summary": "Save or Update User's Location",
+        "description": "Save or Update Current Location",
+        "operationId": "location-update",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -258,6 +258,39 @@
               "properties": {
                 "client": {"type":"object"},
                 "user": {"type":"object"}
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/location/nearby": {
+      "post": {
+        "tags": ["Location"],
+        "summary": "Get nearby users",
+        "description": "Get nearby users with in a radius",
+        "operationId": "location-nearby",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization Token",
+            "required": true,
+            "type": "string",
+            "value": "Bearer <access_token>"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+
               }
             }
           },

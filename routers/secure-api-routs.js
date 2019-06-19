@@ -5,7 +5,7 @@
 
 const router = require('express').Router();
 
-router.use(require('../controllers/api/secure/test-api-controller'));
-router.use(require('../controllers/api/secure/user-location-controller'));
+router.use('/test',require('../controllers/api/secure/test-api-controller'));
+router.use('/location',require('../controllers/api/secure/user-location-controller'));
 
 module.exports = router;

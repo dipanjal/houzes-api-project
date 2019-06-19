@@ -1,17 +1,17 @@
+/**
+ * url: /api/v1/location
+ * @type {Router}
+ */
+
 const router = require('express').Router();
 const authenticator = require('../../../modules/oauth/middleware/authenticator').authenticateRequest;
 const ApiResponse = require('../../../components').viewModels.ApiResponse;
 const UserLocationDao = require('../../../db/dao/user-location-dao');
 
-router.get('/user-location',authenticator,(req,res)=>{
-    let data = {
-        message: 'accessed to user location'
-    };
-    res.json(new ApiResponse(200,'ok',data));
-});
-
-
-router.put('/user-location',authenticator,(req,res)=>{
+/**
+ * save or update user's location
+ */
+router.put('/update',authenticator,(req,res)=>{
     let requestBody = req.body;
     let data = {
         user_id: requestBody.user_id,
@@ -26,7 +26,10 @@ router.put('/user-location',authenticator,(req,res)=>{
     });
 });
 
-router.post('/user-nearby',authenticator,(req,res)=> {
+/**
+ * get nearby users within a radius
+ */
+router.post('/nearby',authenticator,(req,res)=> {
     UserLocationDao.getNearbyUsersByRadius(req.body.latitude,req.body.longitude,req.body.radius)
         .then(locations => {
             res.json(new ApiResponse(200,'ok',locations));
