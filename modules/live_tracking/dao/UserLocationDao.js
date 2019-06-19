@@ -1,10 +1,12 @@
-const sequelize = require('../connectors/seq-pg-connector');
-let UserLocationModel = require('../../db/models').UserLocationModel;
+const sequelize = require('./pg-connector');
+let UserLocationModel = require('../models').UserLocationModel;
 let UserLocationDao = function () {};
 
 /**
- *  SAVE or UPDATE
- **/
+ * SAVE OR UPDATE
+ * @param UserLocationData
+ * @returns {Promise<any>}
+ */
 
 UserLocationDao.saveOrUpdate = (UserLocationData) => {
     return new Promise((resolve, reject) => {
@@ -24,7 +26,13 @@ UserLocationDao.saveOrUpdate = (UserLocationData) => {
     });
 };
 
-
+/**
+ * SERVER NEARBY USERS IN SPECIFIC RADIUS
+ * @param latitude
+ * @param longitude
+ * @param radius
+ * @returns {Promise<any>}
+ */
 UserLocationDao.getNearbyUsersByRadius = (latitude,longitude,radius) => {
     return new Promise((resolve,reject) => {
 

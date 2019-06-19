@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../../../db/connectors/seq-pg-connector');
-const US_PHONE_ENUM = require('../../../components/enums/regex-enums').US_PHONE;
+let sequelize = require('../dao/pg-connector');
+
+const US_PHONE_ENUM = {
+    pattern: /^(\+1)?([0-9]{10})$/g,
+    sample: '+15417543010',
+    message: 'Invalid Phone'
+};
 
 class User extends Sequelize.Model {}
 User.init({

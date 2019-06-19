@@ -1,4 +1,4 @@
-const UserLocationDao = require('../../../db/dao/user-location-dao');
+const UserLocationDao = require('../dao/UserLocationDao');
 const authenticator = require('../middlewares/socket-middleware').authenticateSocket;
 const saveOrUpdateUserSocket = require('../middlewares/socket-middleware').saveOrUpdateUserSocket;
 
@@ -25,18 +25,26 @@ module.exports = (io) => {
             data.user_id = socket.user_socket.user_id;
 
             UserLocationDao.saveOrUpdate(data).then(userLocation => {
-                io.emit('location::after_update', userLocation);
+                UserLocationDao.getNearbyUsersByRadius(userLocation.latitude,userLocation.longitude,1000)
+                    .then(nearbySocketUsers=>{
+                        if(nearbySocketUsers){
+                            nearbySocketUsers.forEach(socketUser=>{
+                                socketUser = socketUser.toJSON();
+                                io.to(socketUser.socket_id).emit('location::after_update', userLocation);
+                            });
+                        }
+                    });
+                // io.emit('location::after_update', userLocation);
             }).catch(err => {
                 io.to(socket.id).emit('location::error', err.message);
             });
-
-
-            // socket.on('disconnect', () => {
-            //     if(socket.username){
-            //         console.log(`${socket.username} disconnected`);
-            //         socket.broadcast.emit('user left', socket.username);
-            //     }
         });
+
+        // socket.on('disconnect', () => {
+        //     if(socket.username){
+        //         console.log(`${socket.username} disconnected`);
+        //         socket.broadcast.emit('user left', socket.username);
+        //     }
 
         // socket.on('chat message', data => {
         //     let userName = data.username;
