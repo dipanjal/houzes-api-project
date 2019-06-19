@@ -1,4 +1,4 @@
-let User = require('../../modules/oauth/sequlizer_models').User;
+let User = require('../../modules/oauth/auth_models').User;
 let hashUtlis = require('../../components/utils/hash-utils');
 const userAccTypeEnums = require('../../components/enums/user-status-types-enum');
 
@@ -134,6 +134,7 @@ dao.saveOrUpdate = (UserData) => {
 };
 
 dao.activeateUser = (user_id) => {
+    console.log('activateUser()');
     return new Promise((resolve, reject) => {
         User.update(
             {status:userAccTypeEnums.ACTIVATED},
