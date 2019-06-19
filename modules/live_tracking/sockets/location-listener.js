@@ -1,6 +1,6 @@
 const UserLocationDao = require('../../../db/dao/user-location-dao');
-const authenticator = require('../middlewares/socket-authenticator').authenticateSocket;
-const validateUserLocation = require('../schemas/UserLocationSchema').validateUserLocation;
+const authenticator = require('../middlewares/socket-middleware').authenticateSocket;
+const saveOrUpdateUserSocket = require('../middlewares/socket-middleware').saveOrUpdateUserSocket;
 
 module.exports = (io) => {
 
@@ -9,7 +9,8 @@ module.exports = (io) => {
      * before create connection
      * from this token you will get current user
      */
-    io.use(authenticator).on('connection', function(socket){
+    io.use(authenticator).use(saveOrUpdateUserSocket)
+        .on('connection', socket=>{
         /**
          * Before production deployment
          * user currentUser to get user_id
@@ -17,17 +18,24 @@ module.exports = (io) => {
          */
         // let currentUser = socket.access_token.user;
 
-        socket.on('walking::update_location', data => {
+        socket.on('location::update', data => {
             /**
              * set currentUser's id in data
              */
-            // data.user_id = currentUser.id;
+            data.user_id = socket.user_socket.user_id;
 
             UserLocationDao.saveOrUpdate(data).then(userLocation => {
-                io.emit('walking::location_update', userLocation);
+                io.emit('location::after_update', userLocation);
             }).catch(err => {
-                io.to(socket.id).emit('walking::location_update_err', err.message);
+                io.to(socket.id).emit('location::error', err.message);
             });
+
+
+            // socket.on('disconnect', () => {
+            //     if(socket.username){
+            //         console.log(`${socket.username} disconnected`);
+            //         socket.broadcast.emit('user left', socket.username);
+            //     }
         });
 
         // socket.on('chat message', data => {

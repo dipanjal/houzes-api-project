@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Location Client</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 </head>
@@ -17,9 +16,6 @@
     <div class="form-group col-md-8">
         <input type="text" class="form-control" id="lat-lon" autocomplete="on" placeholder="Latitude,Longitude"/>
     </div>
-<!--    <div class="form-group col-md-5">-->
-<!--        <input type="text" class="form-control" id="lon" autocomplete="on" placeholder="Longitude"/>-->
-<!--    </div>-->
     <div class="form-group col-md-12">
         <input type="button" value="Emit" class="form-control btn btn-danger" id="emit-location"/>
     </div>
@@ -28,36 +24,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
     $(function () {
-        let socket = io('localhost:3000',{ query: "token=31fc6dd960858f3a0908d21da97aede114449c76" });
+
+        /**
+         * Authenticate Socket Connection Using Access Token
+         */
+        let socket = io('localhost:3000',{
+            query: "token=0612e35758cab577b587efc6542926189b73ddda"
+        });
 
         $('#emit-location').on('click',event=>{
-            // console.log(event);
+
             let latLon = $('#lat-lon').val().split(',');
-            // console.log(latLon);
+
             let data = {
                 user_id:$('#user-id').val(),
                 latitude:latLon[0].trim(),
                 longitude:latLon[1].trim()
             };
-            socket.emit('walking::update_location',data);
+
+            /**
+             * Request To Update User's Location
+             */
+            socket.emit('location::update',data);
         });
 
-        socket.on('walking::location_update', data => {
+
+        /**
+         * After Location Updated
+         */
+        socket.on('location::after_update', data => {
             console.log(data);
         });
 
-        socket.on('walking::location_update_err', err => {
+
+        /**
+         * Location Update error
+         */
+        socket.on('location::error', err => {
             console.log(err);
         });
 
+        /**
+         * Socket connection time Error
+         */
         socket.on('error', err=>{
             console.log('Err: '+err);
         });
 
         socket.on('connect', msg => {
             console.log('connected');
-            // socket.emit('authenticate user', {username:'user1'});
-            // socket.emit('new user', 'new user connected');
         });
     });
 </script>

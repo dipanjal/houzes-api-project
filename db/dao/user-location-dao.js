@@ -28,13 +28,18 @@ UserLocationDao.saveOrUpdate = (UserLocationData) => {
 UserLocationDao.getNearbyUsersByRadius = (latitude,longitude,radius) => {
     return new Promise((resolve,reject) => {
 
-        let queryString = 'SELECT * FROM user_locations ' +
-            'WHERE ST_Distance_Sphere(ST_MakePoint(latitude,longitude), ' +
-            'ST_MakePoint('+latitude+','+longitude+')) <= '+radius;
+        let queryString = 'SELECT oauth_users.email, user_locations.* FROM user_locations \n' +
+            'INNER JOIN oauth_users ON user_locations.user_id = oauth_users.id\n' +
+            'WHERE ST_Distance_Sphere(ST_MakePoint(latitude,longitude), ST_MakePoint(:lat,:lon)) <= :radius';
 
         sequelize.query(queryString,{
                 model: UserLocationModel,
-                mapToModel: true // pass true here if you have any mapped fields
+                mapToModel: true, // pass true here if you have any mapped fields
+                replacements: {
+                    lat: latitude,
+                    lon: longitude,
+                    radius:radius
+                }
             })
             .then(userLocations => {
                 resolve(userLocations);
