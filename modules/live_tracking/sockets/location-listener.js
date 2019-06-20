@@ -18,13 +18,14 @@ module.exports = (io) => {
          */
         // let currentUser = socket.access_token.user;
 
-        socket.on('location::update', data => {
-            /**
-             * set currentUser's id in data
-             */
-            data.user_id = socket.user_socket.user_id;
+        socket.on('location::update', locationData => {
 
-            UserLocationDao.saveOrUpdate(data).then(userLocation => {
+            /**
+             * set currentUser's id in LocationData
+             */
+            locationData.user_id = socket.user_socket.user_id;
+
+            UserLocationDao.saveOrUpdate(locationData).then(userLocation => {
                 UserLocationDao.getNearbyUsersByRadius(userLocation.latitude,userLocation.longitude,1000)
                     .then(nearbySocketUsers=>{
                         if(nearbySocketUsers){
@@ -34,7 +35,6 @@ module.exports = (io) => {
                             });
                         }
                     });
-                // io.emit('location::after_update', userLocation);
             }).catch(err => {
                 io.to(socket.id).emit('location::error', err.message);
             });
