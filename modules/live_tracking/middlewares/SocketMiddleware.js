@@ -24,7 +24,8 @@ module.exports.authenticateSocket = (socket, next) => {
                 OAuthClientModel,
                 {
                     model: UserModel,
-                    where:{status:'activated'}
+                    where:{status:'activated'},
+                    attributes: ['id','email','first_name','last_name','phone']
                 }
             ]
         }).then( accessToken => {

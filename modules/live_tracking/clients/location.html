@@ -56,6 +56,14 @@
             console.log(data);
         });
 
+        /**
+         * On User Disconnected
+         * Remove Map Marker From Map
+         */
+        socket.on('user::disconnected', data => {
+            console.log(data);
+        });
+
 
         /**
          * Location Update error

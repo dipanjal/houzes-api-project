@@ -1,4 +1,4 @@
-UserSocketModel = require('../models').UserSocketModel;
+let UserSocketModel = require('../models').UserSocketModel;
 
 module.exports.saveOrUpdate = (user_id,new_socket_id) => {
     return new Promise ((resolve, reject) => {
@@ -36,6 +36,16 @@ module.exports.saveOrUpdate = (user_id,new_socket_id) => {
             resolve(userSocketUpdated);
         }).catch(err => reject(err));
     });
+};
 
+
+module.exports.update = (currentUserSocket) => {
+    // let userSocketToUpdate = UserSocketModel.build(currentUserSocket);
+    let userSocketToUpdate = currentUserSocket;
+    return new Promise((resolve, reject) => {
+        userSocketToUpdate.update(currentUserSocket.toJSON()).then(userSocketUpdated=>{
+            resolve(userSocketUpdated)
+        }).catch(err=> reject(err));
+    });
 
 };

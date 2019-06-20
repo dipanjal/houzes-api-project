@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../dao/pg-connector');
+let sequelize = require('../dao/PG-DBConnector');
 
 /**
  * SEPARATE SCHEMA FOR SOCKET PROJECT
