@@ -8,13 +8,12 @@ const OAuthAccessTokenModel = require('../models').OAuthAccessTokenModel,
  * AUTHENTICATE SOCKET BY ACCESS TOKEN
  * @param socket
  * @param next
- * @returns {Promise<T | never>}
  */
 module.exports.authenticateSocket = (socket, next) => {
     console.log('socket authenticator()');
     let bearerToken = socket.request._query['token'];
 
-    return OAuthAccessTokenModel
+    OAuthAccessTokenModel
         .findOne({
             where: {
                 access_token: bearerToken,
