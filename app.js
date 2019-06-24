@@ -43,3 +43,7 @@ let socket_static_client_path = '/modules/live_tracking/clients';
 app.get('/location',function(req, res){
 	res.sendFile(__dirname+socket_static_client_path+'/location.html');
 });
+
+app.get('/unsplash',function(req, res){
+	res.sendFile(__dirname+'/views/unsplash.html');
+});

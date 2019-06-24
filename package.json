@@ -8,6 +8,7 @@
   "author": "Dipanjal Maitra",
   "dependencies": {
     "@hapi/joi": "^15.0.3",
+    "axios": "^0.19.0",
     "body-parser": "^1.18.3",
     "crypto": "^1.0.1",
     "express": "^4.16.4",

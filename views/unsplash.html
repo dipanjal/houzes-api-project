@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unsplash API Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form col-md-12">
+<!--        <div>-->
+<!--            <input type="text" class="form-control btn btn-primary" id="btn1" value="Darksky API Test"/>-->
+<!--        </div>-->
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="image keyword" id="_query"/>
+        </div>
+        <div>
+            <input type="button" class="form-control btn btn-success" id="btn2" value="Unsplash API Test"/>
+        </div>
+    </form>
+</div>
+<script>
+    $(function(){
+        let page = 1;
+        $("#btn2").on('click', (e)=> {
+            // let requestUrl = "https://api.unsplash.com/search/photos?query=minimal";
+            let query = $("#_query").val()==""?"face":$("#_query").val();
+            // let proxy = 'https://cors-anywhere.herokuapp.com/';
+            // let requestURL = proxy+"https://unsplash.com/napi/search?query="+query+"&xp=&per_page=20&page="+page;
+            let requestURL = "http://localhost:3000/api/v1/public/unsplash";
+            $.ajax({
+                url: requestURL,
+                type: 'POST',
+                data: {
+                    query: query,
+                    page: page
+                }
+
+            }).done(data=>{
+                    console.log(data);
+                    if(data.total_pages>=page)
+                        page++;
+                })
+                .fail(err=> {
+                    console.log(err);
+                });
+
+        });
+
+        $("#btn1").on('click', (e)=> {
+            let proxy = 'https://cors-anywhere.herokuapp.com/';
+            let apiUrl = "https://api.darksky.net/forecast/8c7d27b0192662602c132af5851de33e/37.8267,-122.4233";
+            let requestURL = proxy+apiUrl;
+            $.ajax(requestURL)
+                .done( data => {
+                    console.log(data);
+                })
+                .fail( (err)=>{
+                    console.log(err)
+                });
+
+            // $.ajax({
+            //     url: requestURL,
+            //     type: 'GET',
+            //     headers: {
+            //         "content-type": "application/json",
+            //         "Access-Control-Allow-Origin": "http://localhost:3000"
+            //     },
+            //     crossDomain: true,
+            //     // success: (data) => {
+            //     //     console.log(data);
+            //     //
+            //     // },
+            //     // error: (err) => {
+            //     //     console.log(err);
+            //     // }
+            //     // beforeSend: function(xhr) {
+            //     //
+            //     //     xhr.setRequestHeader("Authorization", "Basic OTdlMjVmNWJiMTdjNzI2MzVjOGU3NjlhOTI3ZTA3M2Q5MWZmMTA3ZDM2YTZkOWE5Og==");
+            //     // }
+            //     // headers: {  'Access-Control-Allow-Origin': 'http://localhost:3000' }
+            //     // xhrFields: {
+            //     //     // withCredentials: true,
+            //     //     "Access-Control-Allow-Credentials": true
+            //     // }
+            // }).done(function(data) {
+            //     console.log(data);
+            //             // alert( "success" );
+            // }).fail(function() {
+            //     alert( "error" );
+            // });
+
+        });
+    });
+</script>
+</body>
+</html>
