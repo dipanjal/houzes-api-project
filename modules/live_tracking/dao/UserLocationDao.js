@@ -1,4 +1,4 @@
-const sequelize = require('./pg-connector');
+const sequelize = require('./PG-DBConnector');
 let UserLocationModel = require('../models').UserLocationModel;
 let UserLocationDao = function () {};
 

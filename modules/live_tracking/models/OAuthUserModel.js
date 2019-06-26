@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../dao/pg-connector');
+let sequelize = require('../dao/PG-DBConnector');
 
 const US_PHONE_ENUM = {
     pattern: /^(\+1)?([0-9]{10})$/g,

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-let sequelize = require('../dao/pg-connector');
+let sequelize = require('../dao/PG-DBConnector');
 
 /**
  * SEPARATE USER SOCKET SCHEMA FOR SOCKET PROJECT
@@ -17,6 +17,7 @@ UserSocket.init({
         },
         user_id: Sequelize.INTEGER,
         socket_id: Sequelize.TEXT,
+        is_connected: Sequelize.BOOLEAN,
         createdAt: Sequelize.TIME,
         updatedAt: Sequelize.TIME
     },

@@ -1,19 +1,19 @@
 const Sequelize = require('sequelize');
 const OAuthAccessTokenModel = require('../models').OAuthAccessTokenModel,
     OAuthClientModel = require('../models').OAuthClientModel,
-    UserModel = require('../models').UserModel,
-    UserSocketModel = require('../models').UserSocketModel;
+    UserModel = require('../models').UserModel;
+    // UserSocketModel = require('../models').UserSocketModel;
+
 /**
  * AUTHENTICATE SOCKET BY ACCESS TOKEN
  * @param socket
  * @param next
- * @returns {Promise<T | never>}
  */
 module.exports.authenticateSocket = (socket, next) => {
     console.log('socket authenticator()');
     let bearerToken = socket.request._query['token'];
 
-    return OAuthAccessTokenModel
+    OAuthAccessTokenModel
         .findOne({
             where: {
                 access_token: bearerToken,
@@ -24,7 +24,8 @@ module.exports.authenticateSocket = (socket, next) => {
                 OAuthClientModel,
                 {
                     model: UserModel,
-                    where:{status:'activated'}
+                    where:{status:'activated'},
+                    attributes: ['id','email','first_name','last_name','phone']
                 }
             ]
         }).then( accessToken => {
@@ -44,36 +45,12 @@ module.exports.authenticateSocket = (socket, next) => {
  */
 module.exports.saveOrUpdateUserSocket = (socket, next) => {
     console.log('saveOrUpdateUserSocket()');
-    let currentSocketUser = socket.access_token.user;
+    let currentSocketUser = socket.access_token.user.id;
+    let currentSocketId = socket.id;
 
-    UserSocketModel.findOne({
-        where:{
-            user_id : currentSocketUser.id
-        }
-    }).then(userSocket=>{
-        /**
-         * if exist then ==> update
-         */
-        if(userSocket){
-            return userSocket.update({
-                    socket_id: socket.id,
-                    is_connected: true
-                },
-                {where: userSocket.id});
-        }
-        /**
-         * create new socket user
-         * where is_connected will be true by default
-         */
-        else{
-            let userSocketData = {
-                user_id: currentSocketUser.id,
-                socket_id: socket.id,
-            };
-            return UserSocketModel.create(userSocketData);
-        }
-    }).then(userSocketUpdated => {
-        socket.user_socket = userSocketUpdated;
-        next();
-    }).catch(err => next(err));
+    require('../dao/UserSocketDao').saveOrUpdate(currentSocketUser,currentSocketId)
+        .then(userSocketUpdated=>{
+            socket.user_socket = userSocketUpdated;
+            next();
+        }).catch(err => next(err));
 };

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../dao/pg-connector');
+const sequelize = require('../dao/PG-DBConnector');
 
 class OAuthAccessToken extends Sequelize.Model{}
 OAuthAccessToken.init({

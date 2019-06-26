@@ -29,7 +29,7 @@
          * Authenticate Socket Connection Using Access Token
          */
         let socket = io('localhost:3000',{
-            query: "token=0612e35758cab577b587efc6542926189b73ddda"
+            query: "token=5a5ed76fa5b60eba5558f07fe447a33e3ce2d801"
         });
 
         $('#emit-location').on('click',event=>{
@@ -37,22 +37,34 @@
             let latLon = $('#lat-lon').val().split(',');
 
             let data = {
-                user_id:$('#user-id').val(),
                 latitude:latLon[0].trim(),
                 longitude:latLon[1].trim()
             };
 
             /**
-             * Request To Update User's Location
+             * sharing driver's current location to nearby users
+             * through socket server
+             *
+             * server will lister the 'location::share' event
+             * and pass it to the nearby users
              */
-            socket.emit('location::update',data);
+            socket.emit('location::share',data);
         });
 
 
         /**
-         * After Location Updated
+         * Users will listen to the event continuously
+         * to track nearby driver's location changes
          */
-        socket.on('location::after_update', data => {
+        socket.on('location::receive', data => {
+            console.log(data);
+        });
+
+        /**
+         * On User Disconnected
+         * Remove Map Marker From Map
+         */
+        socket.on('user::disconnected', data => {
             console.log(data);
         });
 
@@ -71,8 +83,8 @@
             console.log('Err: '+err);
         });
 
-        socket.on('connect', msg => {
-            console.log('connected');
+        socket.on('connected', username => {
+            console.log(username+' connected');
         });
     });
 </script>
