@@ -29,7 +29,7 @@
          * Authenticate Socket Connection Using Access Token
          */
         let socket = io('localhost:3000',{
-            query: "token=0612e35758cab577b587efc6542926189b73ddda"
+            query: "token=5a5ed76fa5b60eba5558f07fe447a33e3ce2d801"
         });
 
         $('#emit-location').on('click',event=>{
@@ -83,8 +83,8 @@
             console.log('Err: '+err);
         });
 
-        socket.on('connect', msg => {
-            console.log('connected');
+        socket.on('connected', username => {
+            console.log(username+' connected');
         });
     });
 </script>
