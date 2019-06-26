@@ -72,11 +72,12 @@ module.exports = (io) => {
                         io.to(socketUser.socket_id).emit('user::disconnected', currentUser);
                     });
                 }
-                console.log(currentUser.email,'disconnected from',currentUserSocket.socket_id);
                 currentUserSocket.is_connected = false;
                 UserSocketDao.update(currentUserSocket)
-                    .then(data => console.log(data))
-                    .catch(err=> console.log(err));
+                    .then(data => {
+                        console.log(currentUser.email,'disconnected from',currentUserSocket.socket_id);
+                        console.log('-----------------------------------------------------------------');
+                    }).catch(err=> console.log(err));
             });
 
             // socket.on('chat message', data => {
