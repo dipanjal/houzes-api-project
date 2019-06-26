@@ -2,7 +2,9 @@ let _ = require('lodash');
 
 /** @todo load from factory */
 
-let sequelizeModels = require('./db/sequlizer_models');
+let sequelizeModels = require('./auth_models');
+let hashUtlis = require('../../components/utils/hash-utils'),
+    userStatusTypes = require('../../components/enums/user-status-types-enum');
 
 
 let User = sequelizeModels.User,
@@ -22,7 +24,12 @@ function getAccessToken(bearerToken) {
         //   model: User,
         //   attributes: ['id', 'username'],
         // }, OAuthClient
-          User,OAuthClient
+          OAuthClient,
+          {
+              model: User,
+              where:{status:userStatusTypes.ACTIVATED}
+          }
+
       ]
     })
     .then(function (accessToken) {
@@ -75,7 +82,8 @@ function getUser(username, password) {
             attributes: ['id', 'email', 'password', 'scope'],
         })
         .then(function (user) {
-            return user.password == password ? user.toJSON() : false;
+            // return user.password == password ? user.toJSON() : false;
+            return hashUtlis.isEqualMD5Hash(password,user.password) ? user.toJSON() : false;
         })
         .catch(function (err) {
             console.log("getUser - Err: ", err)
@@ -233,20 +241,29 @@ function getRefreshToken(refreshToken) {
         .findOne({
             attributes: ['client_id', 'user_id', 'expires'],
             where: {refresh_token: refreshToken},
-            include: [OAuthClient, User]
+            include: [OAuthClient, {
+                model:User,
+                attributes: ['id', 'email', 'password', 'scope']
+            }]
 
         })
         .then(function (savedRT) {
             // console.log(savedRT);
-            var tokenTemp = {
-                user: savedRT ? savedRT.user.toJSON() : {},
-                client: savedRT ? savedRT.oauth_client.toJSON() : {},
-                refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
-                refreshToken: refreshToken,
-                refresh_token: refreshToken,
-                scope: savedRT.scope
-            };
-            return tokenTemp;
+            if (savedRT){
+                let tokenTemp = {
+                    user: savedRT ? savedRT.user.toJSON() : {},
+                    client: savedRT ? savedRT.oauth_client.toJSON() : {},
+                    refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
+                    refreshToken: refreshToken,
+                    refresh_token: refreshToken,
+                    scope: savedRT.scope
+                };
+                return tokenTemp;
+            }else{
+                console.log('getRefreshToken() => refresh_token is null/expired')
+                return null;
+            }
+
 
         }).catch(function (err) {
             console.log("getRefreshToken - Err: ", err)
@@ -278,5 +295,5 @@ module.exports = {
     saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
     validateScope: validateScope,
     verifyScope: verifyScope,
-}
+};
 

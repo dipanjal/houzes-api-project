@@ -1,9 +1,10 @@
 const router = require('express').Router();
 
-let testApis = require('../controllers/api/test-api-controller');
-let publicApis = require('../controllers/api/public-api-controller');
+let swaggerUi = require('../modules/api_doc_generator');
 
-router.use('/test',testApis);
-router.use('/public',publicApis);
+router.use('/v1',require('./secure-api-routs'));
+router.use('/v1/public',require('./public-api-routs'));
+router.use('/v1/endpoints',swaggerUi.swaggerUiServer,swaggerUi.SwaggerUiSetup);
+
 
 module.exports = router;

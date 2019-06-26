@@ -7,7 +7,9 @@
   },
   "author": "Dipanjal Maitra",
   "dependencies": {
+    "@hapi/joi": "^15.0.3",
     "body-parser": "^1.18.3",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
@@ -17,8 +19,11 @@
     "pg": "^7.10.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "latest",
+    "short-uuid": "^3.1.1",
     "socket.io": "^2.2.0",
-    "socketio-auth": "^0.1.1"
+    "speakeasy": "^2.0.0",
+    "swagger-ui-express": "^4.0.4",
+    "uuid4": "^1.1.4"
   },
   "devDependencies": {
     "nodemon": "^1.19.0"

@@ -1,0 +1,390 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "BASE URL: `172.18.1.11:3001`",
+    "version": "1.0.0",
+    "title": "Houzes API Doc",
+    "termsOfService": "http://172.18.1.11:3001/terms/",
+    "contact": {
+      "email": "dipwsitaus@gmail.com"
+    }
+  },
+  "host": "172.18.1.11:3001",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Operations about user"
+    },
+    {
+      "name": "OAuth",
+      "description": "Operations with Authentications"
+    },
+    {
+      "name": "Location",
+      "description": "User Location APIs"
+    }
+  ],
+  "schemes": ["http"],
+  "paths": {
+    "/api/v1/public/user/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Sign Up User",
+        "description": "public access",
+        "operationId": "createUser",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "/api/v1/public/user/register",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {"type":"integer"},
+                "email": {"type":"string"},
+                "password": {"type":"string"},
+                "phone": {"type":"string"},
+                "first_name": {"type":"string"},
+                "last_name": {"type":"string"},
+                "scope": {"type":"string"},
+                "updatedAt": {  "type": "string"},
+                "createdAt": {"type": "string"},
+                "status": {"type": "string"}
+              }
+            }
+          },
+          "403":{
+            "description": "email already existed, select an unique email"
+          }
+        }
+      }
+    },
+    "/api/v1/public/client/register": {
+      "post": {
+        "tags": ["OAuth"],
+        "summary": "Register API Client After Sign-up",
+        "description": "This API CLIENT belongs to User",
+        "operationId": "createClient",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "/api/v1/public/client/register",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OAuthClient"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {"type":"integer", "value": 2 },
+                "name": {"type":"string", "value": "Test Api App" },
+                "client_id": {"type":"string", "value": "<client_id>"},
+                "client_secret": {"type":"string", "value": "<client_secret>"},
+                "scope": {"type":"string", "value": "default"},
+                "user_id": {"type":"integer", "value": 2},
+                "updatedAt": {  "type": "string" , "value": "<timestamp>"},
+                "createdAt": {"type": "string", "value": "<timestamp>"}
+              }
+            }
+          },
+          "403":{
+            "description": "Forbidden: no user found"
+          },
+          "400": {"description": "Bad Request"}
+        }
+      }
+    },
+    "/oauth/token": {
+      "post": {
+        "tags": ["OAuth"],
+        "summary": "Request Access Token",
+        "description": "Request To Generate Access Token",
+        "operationId": "requestToken",
+        "produces": ["application/json","application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "/oauth/token",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OAuthTokenForm"
+            }
+          }
+
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "client": {"type":"object"},
+                "user": {"type":"object"},
+                "access_token": {"type":"string", "value": "< access_token >"},
+                "refresh_token": {"type":"string", "value": "< refresh_token >"},
+                "accessTokenExpiresAt": {"type":"string", "value": "<timestamp>"},
+                "refreshTokenExpiresAt": {"type":"string", "value": "<timestamp>" },
+                "scope": {  "type": "boolean" , "value": true}
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/oauth/token/refresh": {
+      "post": {
+        "tags": ["OAuth"],
+        "summary": "Refresh Access Token",
+        "description": "Renew Access Token After Token Expired",
+        "operationId": "refreshToken",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "/oauth/token/refresh",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RefreshTokenForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "client": {"type":"object"},
+                "user": {"type":"object"},
+                "access_token": {"type":"string", "value": "<access_token>"},
+                "refresh_token": {"type":"string", "value": "<refresh_token>"},
+                "accessTokenExpiresAt": {"type":"string", "value": "<timestamp>"},
+                "refreshTokenExpiresAt": {"type":"string", "value": "<timestamp>" },
+                "scope": {  "type": "boolean" , "value": true}
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/oauth/token/revoke": {
+      "post": {
+        "tags": ["OAuth"],
+        "summary": "Revoke Access Token",
+        "description": "Logout",
+        "operationId": "revokeToken",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "/oauth/token/revoke",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RefreshTokenForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "client": {"type":"object"},
+                "user": {"type":"object"},
+                "access_token": {"type":"string", "value": "<access_token>"},
+                "refresh_token": {"type":"string", "value": "<refresh_token>"},
+                "accessTokenExpiresAt": {"type":"string", "value": "<timestamp>"},
+                "refreshTokenExpiresAt": {"type":"string", "value": "<timestamp>" },
+                "scope": {  "type": "boolean" , "value": true}
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/location/update": {
+      "put": {
+        "tags": ["Location"],
+        "summary": "Save or Update User's Location",
+        "description": "Save or Update Current Location",
+        "operationId": "location-update",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization Token",
+            "required": true,
+            "type": "string",
+            "value": "Bearer <access_token>"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "client": {"type":"object"},
+                "user": {"type":"object"}
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/location/nearby": {
+      "post": {
+        "tags": ["Location"],
+        "summary": "Nearby Users",
+        "description": "Find nearby users by radius",
+        "operationId": "location-nearby",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization Token",
+            "required": true,
+            "type": "string",
+            "value": "Bearer <access_token>"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Location Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "latitude": {"type":"number"},
+                "longitude": {"type":"number"},
+                "radius" : {"type" : "integer"}
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {"type":"integer","value": 200},
+                "message": {"type":"integer","value": "ok"},
+                "data" : {"type" : "object",
+                  "value":
+                    {
+                      "email": "dipanjalmaitra@gmail.com",
+                      "id": 1,
+                      "user_id": 8,
+                      "latitude": 23.822525,
+                      "longitude": 90.417483,
+                      "is_driving": false,
+                      "createdAt": "2019-06-14T17:27:48.690Z",
+                      "updatedAt": "2019-06-19T18:14:14.883Z",
+                      "socket_id": "COUZZ4WbmAYwNtSFAAAA"
+                    }
+                  }
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {"type": "string"},
+        "password": {"type": "string"},
+        "phone": {
+          "type": "string",
+          "value": "+1-541-754-3010"
+        },
+        "first_name": {"type": "string"},
+        "last_name": {"type": "string"}
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "OAuthClient": {
+      "type": "object",
+      "properties": {
+        "email": {"type": "string"},
+        "password": {"type": "string"},
+        "client_name": {"type": "string"},
+        "client_id": {"type": "string"},
+        "client_secret": {"type": "string"}
+      },
+      "xml": {
+        "name": "OAuthClient"
+      }
+    },
+    "OAuthTokenForm": {
+      "type": "object",
+      "properties": {
+        "grant_type": {"type": "string",
+          "value": "password"
+        },
+        "email": {"type": "string"},
+        "password": {"type": "string"},
+        "client_id": {"type": "string"},
+        "client_secret": {"type": "string"}
+      },
+      "xml": {"name": "OAuthTokenForm"}
+    },
+    "RefreshTokenForm": {
+      "type": "object",
+      "properties": {
+        "grant_type": {
+          "type": "string",
+          "value": "refresh_token"
+        },
+        "client_id": {"type": "string"},
+        "client_secret": {"type": "string"},
+        "refresh_token": {"type": "string"}
+      },
+      "xml": {"name": "RefreshTokenForm"}
+    }
+  }
+  }
+}

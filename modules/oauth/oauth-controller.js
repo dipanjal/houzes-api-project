@@ -1,19 +1,17 @@
 const router = require('express').Router();
-/**
- * @todo
- * load form factory
- */
-
-// const factory = require('./factory');
+const isUserActivated = require('../../middlewares/user-validator').isUserActivated;
 
 let app = require('./app');
 let oauth = app.oauth;
 let Request = app.request;
 let Response = app.response;
 
+let ApiResponse = require('../../components/view-models').ApiResponse;
+
 /** GET AUTH TOKEN /oauth/token */
-router.all('/token', obtainToken);
-router.all('/revoke', obtainToken);
+router.all('/token',isUserActivated, obtainToken);
+router.all('/token/refresh', obtainToken);
+router.all('/token/revoke', obtainToken);
 
 function obtainToken(req, res) {
 
@@ -24,15 +22,14 @@ function obtainToken(req, res) {
 	console.log('obtainToken()');
 	return oauth.token(request, response)
 		.then(function(token) {
+			delete token.user.password;
             delete token.accessToken;
             delete token.refreshToken;
-			// console.log(token);
-			res.json(token);
+			res.json(new ApiResponse(200,'ok',token));
 		}).catch(function(err) {
-			res.status(err.code || 500).json(err);
+			let code = err.code || 500;
+			res.status(code).json(new ApiResponse(code,err.message,err));
 		});
 }
-
-
 
 module.exports = router;
