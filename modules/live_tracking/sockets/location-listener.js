@@ -50,8 +50,10 @@ module.exports = (io) => {
                                  * to share driver's location
                                  * to each nearby users individually
                                  */
+                                console.log("Nearby User Found:", nearbySocketUsers.length);
                                 nearbySocketUsers.forEach(socketUser=>{
                                     socketUser = socketUser.toJSON();
+                                    console.log('**sending to:',socketUser.email,'**');
                                     io.to(socketUser.socket_id).emit('location::receive', userLocation);
                                 });
                             }
