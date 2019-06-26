@@ -12,6 +12,7 @@ module.exports = (io) => {
      */
     io.use(authenticator).use(saveOrUpdateUserSocket)
         .on('connection', socket=>{
+
         /**
          * Before production deployment
          * user currentUser to get user_id
@@ -21,21 +22,37 @@ module.exports = (io) => {
 
         let nearbyUsers = null;
 
-        socket.on('location::update', locationData => {
+            /**
+             * while driving
+             * Driver has emitted his location change to socket
+             * to share with his nearby users/watchers
+             */
+        socket.on('location::share', locationData => {
 
             /**
+             * to update driver's location in DB
              * set currentUser's id in LocationData
              */
             locationData.user_id = socket.user_socket.user_id;
 
             UserLocationDao.saveOrUpdate(locationData).then(userLocation => {
+
+                /**
+                 * after updating drivers location
+                 * find his nearby users
+                 */
                 UserLocationDao.getNearbyUsersByRadius(userLocation.latitude,userLocation.longitude,1000)
                     .then(nearbySocketUsers=>{
                         if(nearbySocketUsers){
                             nearbyUsers = nearbySocketUsers;
+                            /**
+                             * server will emit 'location::receive' event
+                             * to share driver's location
+                             * to each nearby users individually
+                             */
                             nearbySocketUsers.forEach(socketUser=>{
                                 socketUser = socketUser.toJSON();
-                                io.to(socketUser.socket_id).emit('location::after_update', userLocation);
+                                io.to(socketUser.socket_id).emit('location::receive', userLocation);
                             });
                         }
                     });
