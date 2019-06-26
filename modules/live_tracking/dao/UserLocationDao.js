@@ -39,7 +39,7 @@ UserLocationDao.getNearbyUsersByRadius = (latitude,longitude,radius) => {
         let queryString = 'SELECT oauth_users.email, user_locations.*, user_sockets.socket_id FROM user_locations \n' +
             'INNER JOIN user_sockets ON user_locations.user_id = user_sockets.user_id\n' +
             'INNER JOIN oauth_users ON user_locations.user_id = oauth_users.id\n' +
-            'WHERE ST_Distance_Sphere(ST_MakePoint(latitude,longitude), ST_MakePoint(:lat,:lon)) <= :radius';
+            'WHERE ST_DistanceSphere(ST_MakePoint(latitude,longitude), ST_MakePoint(:lat,:lon)) <= :radius';
 
         sequelize.query(queryString,{
                 model: UserLocationModel,
