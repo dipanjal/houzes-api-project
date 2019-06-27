@@ -1,4 +1,3 @@
-sequelize = require('../connectors/seq-pg-connector');
 
 /**
  * Sequelize Models or Entities
@@ -6,7 +5,7 @@ sequelize = require('../connectors/seq-pg-connector');
  * All of these models are associated with oAuth
  */
 
-let sequelizeModels = require('../../modules/oauth/sequlizer_models');
+let sequelizeModels = require('../../modules/oauth/auth_models');
 
 let User = sequelizeModels.User,
     OAuthAccessToken = sequelizeModels.OAuthAccessToken,
@@ -48,9 +47,6 @@ oAuthDao.findUserByEmailAndPassword = (email, password, callback) => {
         }else{
             callback("wrong email or password", null);
         }
-
-        // user.password === password ? callback(null, user) : callback(null,null);
-        // return user.password === password ? user : null;
     }).catch( err => {
         console.log("findUserByEmailAndPassword - Err: ", err);
         callback(err,null);
@@ -115,7 +111,6 @@ oAuthDao.saveOAuthClient = (UserData, OAuthClientData) => {
         oAuthDao.findUserByEmailAndPassword(UserData.email,UserData.password,(err, user) => {
             if (err){
                 reject(err)
-                // callback(err,null);
             }
             else if (user) {
                 user = user.toJSON();
@@ -127,44 +122,14 @@ oAuthDao.saveOAuthClient = (UserData, OAuthClientData) => {
                     user_id: user.id
                 }).then(oauthClient =>{
                     resolve(oauthClient)
-                    // callback(null,oauthClient);
                 }).catch(err => {
                     reject(err)
-                    // callback(err,null);
                 });
             }else{
                 reject('no user found')
-                // callback("no user found",null);
             }
         });
     });
 };
-
-// oAuthDao.saveOAuthClient = (UserData, OAuthClientData, callback) => {
-//
-//     oAuthDao.findUserByEmailAndPassword(UserData.email,UserData.password,(err, user) => {
-//         user = user.toJSON();
-//         if (err){
-//             callback(err,null);
-//         }
-//         else if (user) {
-//             OAuthClient.create({
-//                 name:OAuthClientData.client_name,
-//                 client_id:OAuthClientData.client_id,
-//                 client_secret:OAuthClientData.client_secret,
-//                 scope: user.scope,
-//                 user_id: user.id
-//             }).then(oauthClient =>{
-//                 callback(null,oauthClient);
-//             }).catch(err => {
-//                 callback(err,null);
-//             });
-//         }else{
-//             callback("no user found",null);
-//         }
-//
-//     });
-// };
-
 
 module.exports = oAuthDao;

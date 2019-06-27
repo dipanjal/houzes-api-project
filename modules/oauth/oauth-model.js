@@ -2,8 +2,9 @@ let _ = require('lodash');
 
 /** @todo load from factory */
 
-let sequelizeModels = require('./sequlizer_models');
-let hashUtlis = require('../../components/utils/hash-utils');
+let sequelizeModels = require('./auth_models');
+let hashUtlis = require('../../components/utils/hash-utils'),
+    userStatusTypes = require('../../components/enums/user-status-types-enum');
 
 
 let User = sequelizeModels.User,
@@ -23,11 +24,11 @@ function getAccessToken(bearerToken) {
         //   model: User,
         //   attributes: ['id', 'username'],
         // }, OAuthClient
-          OAuthClient,User
-          // {
-          //     model: User,
-          //     where:{status:'activated'}
-          // }
+          OAuthClient,
+          {
+              model: User,
+              where:{status:userStatusTypes.ACTIVATED}
+          }
 
       ]
     })
@@ -294,5 +295,5 @@ module.exports = {
     saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
     validateScope: validateScope,
     verifyScope: verifyScope,
-}
+};
 

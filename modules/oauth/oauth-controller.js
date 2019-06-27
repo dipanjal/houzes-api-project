@@ -1,11 +1,5 @@
 const router = require('express').Router();
 const isUserActivated = require('../../middlewares/user-validator').isUserActivated;
-/**
- * @todo
- * load form factory
- */
-
-// const factory = require('./factory');
 
 let app = require('./app');
 let oauth = app.oauth;

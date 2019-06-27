@@ -12,10 +12,7 @@ module.exports = (io) => {
             io.to(socket.id).emit('me joined', data);
             socket.broadcast.to(data.roomName).emit('new user',data);
 
-            // io.to(roomName).emit('new user',{
-            //     roomName:roomName,
-            //     username:data.username
-            // });
+            // io.to(data.roomName).emit('new user',data);
 
         });
 

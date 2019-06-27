@@ -21,8 +21,8 @@
       "description": "Operations with Authentications"
     },
     {
-      "name": "Test",
-      "description": "For Testing Purposes"
+      "name": "Location",
+      "description": "User Location APIs"
     }
   ],
   "schemes": ["http"],
@@ -233,12 +233,12 @@
         }
       }
     },
-    "/api/v1/test/allUsers": {
-      "get": {
-        "tags": ["Test"],
-        "summary": "Show All Tokens",
-        "description": "Get All Access Tokens",
-        "operationId": "getAllToken",
+    "/api/v1/location/update": {
+      "put": {
+        "tags": ["Location"],
+        "summary": "Save or Update User's Location",
+        "description": "Save or Update Current Location",
+        "operationId": "location-update",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -266,9 +266,70 @@
           }
         }
       }
-    }
-  },
-  "definitions": {
+    },
+    "/api/v1/location/nearby": {
+      "post": {
+        "tags": ["Location"],
+        "summary": "Nearby Users",
+        "description": "Find nearby users by radius",
+        "operationId": "location-nearby",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization Token",
+            "required": true,
+            "type": "string",
+            "value": "Bearer <access_token>"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Location Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "latitude": {"type":"number"},
+                "longitude": {"type":"number"},
+                "radius" : {"type" : "integer"}
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {"type":"integer","value": 200},
+                "message": {"type":"integer","value": "ok"},
+                "data" : {"type" : "object",
+                  "value":
+                    {
+                      "email": "dipanjalmaitra@gmail.com",
+                      "id": 1,
+                      "user_id": 8,
+                      "latitude": 23.822525,
+                      "longitude": 90.417483,
+                      "is_driving": false,
+                      "createdAt": "2019-06-14T17:27:48.690Z",
+                      "updatedAt": "2019-06-19T18:14:14.883Z",
+                      "socket_id": "COUZZ4WbmAYwNtSFAAAA"
+                    }
+                  }
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "definitions": {
     "User": {
       "type": "object",
       "properties": {
@@ -324,5 +385,6 @@
       },
       "xml": {"name": "RefreshTokenForm"}
     }
+  }
   }
 }
