@@ -4,7 +4,7 @@
 ```npm install```
 
 ## Usage
-####jQuery
+#### jQuery
 Create Socket Connection with Auth Token
 ```javascript
 let host = '58.84.34.65:3001';
